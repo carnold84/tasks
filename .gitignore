@@ -45,3 +45,10 @@ $RECYCLE.BIN/
 Network Trash Folder
 Temporary Items
 .apdisk
+
+# Editor configs
+.vscode
+
+# Project folders
+node_modules
+build
