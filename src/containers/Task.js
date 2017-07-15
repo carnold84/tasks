@@ -3,16 +3,16 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import AppBar from 'material-ui/AppBar';
+import Input from 'material-ui/Input/Input';
 import Toolbar from 'material-ui/Toolbar';
-import Typography from 'material-ui/Typography';
 import Paper from 'material-ui/Paper';
 import TextField from 'material-ui/TextField';
 import IconButton from 'material-ui/IconButton';
-import List, { ListItem, ListItemSecondaryAction, ListItemText } from 'material-ui/List';
-import Checkbox from 'material-ui/Checkbox';
+import List from 'material-ui/List';
 import ArrowBackIcon from 'material-ui-icons/ArrowBack';
+import EditIcon from 'material-ui-icons/Edit';
 
-import { addTask } from '../actions';
+import { createTask } from '../store/tasks/actions';
 
 const Container = styled.div`
     position: absolute;
@@ -45,47 +45,45 @@ class Task extends Component {
 
     static propTypes = {
         show: bool,
-        id: string,
+        taskId: string,
         onClose: func.isRequired,
     };
 
     defaultProps = {
         show: false,
+        taskId: undefined,
     };
 
     state = {
         show: false,
-        task: {
-            name: '',
-            subTasks: [],
-        },
+        inputText: '',
         isVisible: false,
     };
 
+    task = undefined;
     taskInput = undefined;
 
     onTitleChange = (event) => {
-        const value = event.target.value;
+
+        const inputText = event.target.value;
         
-        // get task
-        let task = this.state.task;
-        task.name = value;
-        this.setState({task});
+        this.setState({inputText});
     };
 
     onTitleSubmit = (event) => {
-        console.log(event.keyCode)
+
+        const { dispatch } = this.props;
+        const { inputText } = this.state;
 
         if (event.keyCode) {
 
             // RETURN
             if (event.keyCode === 13) {
-                
-                // get task
-                let task = this.state.task;
 
-                if (task.id === undefined) {
-                    console.log(task)
+                if (this.task === undefined) {
+                    dispatch(createTask(inputText));
+                } else {
+
                 }
 
                 // clear focus
@@ -108,15 +106,24 @@ class Task extends Component {
     };
 
     componentWillReceiveProps(nextProps) {
-        console.log('componentWillReceiveProps', nextProps)
+
+        const { show, tasksById } = this.props;
+        const { taskId } = nextProps;
+
+        console.log(taskId)
         
         // only update if changed
-        if (nextProps.show !== this.props.show) {
+        if (nextProps.show !== show) {
 
             if (nextProps.show === true) {
 
+                this.task = tasksById[taskId];
+
+                const inputText = this.task ? this.task.text : '';
+
                 this.setState({
                     isVisible: true,
+                    inputText,
                 }, () => {
 
                     setTimeout(() => {
@@ -144,12 +151,11 @@ class Task extends Component {
     render() {
         console.log('Task::render')
 
-        const { id, theme } = this.props;
-        const { show, isVisible, task } = this.state;
+        const { show, isVisible, inputText } = this.state;
 
         let content = undefined;
 
-        if (task.subTasks) {
+        /*if (task.subTasks) {
             content = task.subTasks.map((subTask) => {
                 return (
                     <ListItem dense button key={subTask.id}>
@@ -162,7 +168,7 @@ class Task extends Component {
                     </ListItem>
                 );
             });
-        }
+        }*/
 
         return (
             <Container
@@ -170,19 +176,29 @@ class Task extends Component {
                 show={show}
                 isVisible={isVisible}>
                 <AppBar position="static">
-                    <Toolbar>
+                    <Toolbar disableGutters>
                         <IconButton color="contrast" aria-label="Close" onClick={this.onClose}>
                             <ArrowBackIcon />
+                        </IconButton>
+                        <Input
+                            id="task"
+                            type="text"
+                            value={inputText}
+                            onChange={this.onTitleChange}
+                            onKeyDown={this.onTitleSubmit}
+                            style={{width: '100%', fontSize: '16px', fontWeight: '400', lineHeight: '24px'}}
+                            disableUnderline={true}
+                        />
+                        <IconButton color="contrast" aria-label="Edit">
+                            <EditIcon />
                         </IconButton>
                     </Toolbar>
                 </AppBar>
                 <Content>
                     <Paper elevation={2} square style={{width: '100%', padding: '15px 20px 20px'}}>
-                        <TextField
-                            id="task"
-                            label="Task"
+                        <Input
+                            id="sub-task"
                             type="text"
-                            value={task.name}
                             onChange={this.onTitleChange}
                             onKeyDown={this.onTitleSubmit}
                             style={{width: '100%'}}
@@ -197,15 +213,13 @@ class Task extends Component {
     }
 }
 
-const mapDispatchToProps = (dispatch) => {
+const mapStateToProps = (state) => {
   return {
-    onSubmit: (text) => {
-      dispatch(addTask(text))
-    }
+    tasksById: state.tasks.tasksById,
   }
 }
 
 export default connect(
-    null,
-    mapDispatchToProps
+  mapStateToProps,
+  null,
 )(Task);

@@ -1,20 +1,19 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { withStyles, createStyleSheet } from 'material-ui/styles';
 import AppBar from 'material-ui/AppBar';
 import Toolbar from 'material-ui/Toolbar';
 import Typography from 'material-ui/Typography';
 import Button from 'material-ui/Button';
-import IconButton from 'material-ui/IconButton';
-import List, { ListItem, ListItemSecondaryAction, ListItemText } from 'material-ui/List';
-import Checkbox from 'material-ui/Checkbox';
+import List from 'material-ui/List';
 import AddIcon from 'material-ui-icons/Add';
 
-import { toggleTask } from '../actions';
+import { deleteTask, updateTask } from '../store/tasks/actions';
 
 import Task from './Task';
+
+import Item from '../components/Item';
 
 const Container = styled.div`
     position: absolute;
@@ -41,81 +40,128 @@ const MainContainer = styled.div`
 const Content = styled.div`
     width: 100%;
     height: 100%;
-    flex-direction: column;
+    overflow: auto;
+    padding: 0 0 70px;
+    flex-direction: row;
     justify-content: flex-start;
     align-items: flex-start;
     flex-grow: 1;
     display: flex;
+    z-index: 1;
+`;
+
+const ListContainer = styled.div`
+    width: 100%;
+    margin: 20px 0;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.25);
 `;
 
 const FabContainer = styled.div`
     position: absolute;
     right: 20px;
     bottom: 20px;
+    z-index: 2;
 `;
 
 const SCREENS = {
     TASK: 'screen/task',
 };
 
+const styleSheet = createStyleSheet('Main', {
+  appBar: {
+    fontFamily: 'inherit',
+  },
+});
+
 class Main extends Component {
 
     state = {
-        tasks: undefined,
         currentScreen: undefined,
     };
 
-    onNewTaskClick = () => {
+    onAddTaskClick = () => {
+
+        // show the task screen
         this.setState({
             currentScreen: SCREENS.TASK,
         });
     };
 
-    onTaskClose = () => {
+    onTaskDelete = (task) => {
+        
+        this.props.dispatch(deleteTask(task.id));
+    };
+
+    onTaskClick = (task) => {
+
+        // hide the task screen
         this.setState({
-            currentScreen: undefined,
+            currentScreen: SCREENS.TASK,
+            selectedTaskId: task.id,
         });
     };
 
-    componentDidMount() {
-        console.log('Main::componentDidMount')
+    onTaskCompleted = (task, checked) => {
 
-        const { tasks } = this.state;
+        task.completed = checked;
 
-        if (tasks === undefined) {
-            fetch('http://localhost:3002/tasks').then((response) => {
-                return response.json();
-            }).then((json) => {
-                if (json.length > 0) {
-                    this.setState({
-                        tasks: json,
+        this.props.dispatch(updateTask(task));
+    };
+
+    onTaskClose = () => {
+
+        // hide the task screen
+        this.setState({
+            currentScreen: undefined,
+            selectedTaskId: undefined,
+        });
+    };
+
+    processTasks = () => {
+
+        const { tasks, subTasksByParentId } = this.props;
+
+        let processed_tasks = [];
+
+        if (tasks !== undefined) {
+
+            let child_tasks = {};
+
+            processed_tasks = tasks.map(task => {
+                task.children = subTasksByParentId[task.id];
+                
+                if (task.children) {
+                    let text = task.children.map(child => {
+                        return child.text;
                     });
+                    task.subText = text.join(', ');
                 }
+
+                return task;
             });
-        }
+        }   
+
+        return processed_tasks;
     };
 
     render() {
         console.log('Main::render')
 
-        console.log(this.state)
-
-        const { theme } = this.props;
-        const { tasks, currentScreen } = this.state;
+        const { currentScreen, selectedTaskId } = this.state;
 
         let content = undefined;
+        let processed_tasks = this.processTasks();
 
-        if (tasks) {
-            content = tasks.map((task) => {
+        if (processed_tasks) {
+            
+            content = processed_tasks.map((task) => {
                 return (
-                    <ListItem dense button key={task.id}>
-                        <Checkbox
-                            checked={task.complete}
-                            tabIndex="-1"
-                            disableRipple
-                        />
-                        <ListItemText primary={task.title} />
-                    </ListItem>
+                    <Item
+                        key={task.id}
+                        data={task}
+                        onClick={this.onTaskClick}
+                        onDelete={this.onTaskDelete}
+                        onCompleted={this.onTaskCompleted} />
                 );
             });
         }
@@ -125,22 +171,25 @@ class Main extends Component {
                 <MainContainer>
                     <AppBar position="static">
                         <Toolbar>
-                            <Typography type="title" color="inherit">Simplist</Typography>
+                            <Typography type="subheading" color="inherit">Tasks</Typography>
                         </Toolbar>
                     </AppBar>
                     <Content>
-                        <List>
-                            {content}
-                        </List>
+                        <ListContainer>
+                            <List disablePadding>
+                                {content}
+                            </List>
+                        </ListContainer>
                     </Content>
                     <FabContainer>
-                        <Button fab color="primary" onClick={this.onNewTaskClick}>
+                        <Button fab color="primary" onClick={this.onAddTaskClick}>
                             <AddIcon />
                         </Button>
                     </FabContainer>
                 </MainContainer>
                 <Task
                     show={currentScreen === SCREENS.TASK}
+                    taskId={selectedTaskId}
                     onClose={this.onTaskClose} />
             </Container>
         );
@@ -149,19 +198,13 @@ class Main extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    tasks: state.tasks,
-  }
-}
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    onTaskClick: (id) => {
-      dispatch(toggleTask(id))
-    }
+    isFetching: state.tasks.isFetching,
+    tasks: state.tasks.tasks,
+    subTasksByParentId: state.tasks.subTasksByParentId,
   }
 }
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
-)(Main);
+  null,
+)(withStyles(styleSheet)(Main));
