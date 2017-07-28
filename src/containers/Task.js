@@ -3,16 +3,20 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import AppBar from 'material-ui/AppBar';
-import Input from 'material-ui/Input/Input';
 import Toolbar from 'material-ui/Toolbar';
-import Paper from 'material-ui/Paper';
-import TextField from 'material-ui/TextField';
 import IconButton from 'material-ui/IconButton';
 import List from 'material-ui/List';
+import Button from 'material-ui/Button';
 import ArrowBackIcon from 'material-ui-icons/ArrowBack';
+import AddIcon from 'material-ui-icons/Add';
 import EditIcon from 'material-ui-icons/Edit';
 
-import { createTask } from '../store/tasks/actions';
+import { createTask, updateTask } from '../store/tasks/actions';
+
+import EditTextInput from '../components/EditTextInput';
+import EditDialog from '../components/EditDialog';
+
+import { FabContainer } from '../styles';
 
 const Container = styled.div`
     position: absolute;
@@ -39,6 +43,20 @@ const Content = styled.div`
     display: flex;
 `;
 
+const TitleInput = styled.div`
+    height: 100%;
+    align-items: center;
+    flex-grow: 1;
+    display: flex;
+`;
+
+const AppBarTitle = styled.h2`
+    font-size: 16px;
+    align-items: center;
+    flex-grow: 1;
+    display: flex;
+`;
+
 const { string, bool, func } = PropTypes;
 
 class Task extends Component {
@@ -54,43 +72,68 @@ class Task extends Component {
         taskId: undefined,
     };
 
+    static MODES = {
+        EDIT_TASK: 'editTask',
+        EDIT_SUB_TASK: 'editSubTask',
+    };
+
     state = {
         show: false,
-        inputText: '',
+        taskText: '',
+        subTaskText: '',
+        mode: undefined,
         isVisible: false,
     };
 
     task = undefined;
-    taskInput = undefined;
+    subTask = undefined;
 
-    onTitleChange = (event) => {
-
-        const inputText = event.target.value;
-        
-        this.setState({inputText});
-    };
-
-    onTitleSubmit = (event) => {
-
+    onTaskSave = (text) => {
+        console.log('onTaskSave', text)
         const { dispatch } = this.props;
-        const { inputText } = this.state;
 
-        if (event.keyCode) {
+        if (this.task === undefined) {
+            dispatch(createTask(text));
+        } else {
+            this.task.text = text;
 
-            // RETURN
-            if (event.keyCode === 13) {
-
-                if (this.task === undefined) {
-                    dispatch(createTask(inputText));
-                } else {
-
-                }
-
-                // clear focus
-                event.target.blur();
-            }
+            dispatch(updateTask(this.task));
         }
-    };
+
+        this.setState({
+            taskText: text,
+            mode: undefined,
+        });
+    }
+
+    onTaskCancel = () => {
+        this.setState({
+            mode: undefined,
+        });
+    }
+
+    onSubTaskSave = (text) => {
+        const { dispatch } = this.props;
+
+        if (this.subTask === undefined) {
+            dispatch(createTask(text, this.task.id));
+        } else {
+            this.subTask.text = text;
+
+            dispatch(updateTask(this.subTask));
+        }
+
+        this.setState({
+            subTaskText: text,
+            mode: undefined,
+        });
+    }
+
+    onSubTaskClose = () => {
+        this.setState({
+            mode: undefined,
+        });
+    }
 
     onHideComplete = () => {
 
@@ -105,12 +148,22 @@ class Task extends Component {
         this.props.onClose();
     };
 
+    onEditClick = () => {
+        this.setState({
+            mode: Task.MODES.EDIT_TASK,
+        });
+    };
+
+    onAddSubTaskClick = () => {
+        this.setState({
+            mode: Task.MODES.EDIT_SUB_TASK,
+        });
+    };
+
     componentWillReceiveProps(nextProps) {
 
         const { show, tasksById } = this.props;
         const { taskId } = nextProps;
-
-        console.log(taskId)
         
         // only update if changed
         if (nextProps.show !== show) {
@@ -119,11 +172,12 @@ class Task extends Component {
 
                 this.task = tasksById[taskId];
 
-                const inputText = this.task ? this.task.text : '';
+                const taskText = this.task ? this.task.text : '';
 
                 this.setState({
                     isVisible: true,
-                    inputText,
+                    mode: undefined,
+                    taskText,
                 }, () => {
 
                     setTimeout(() => {
@@ -151,7 +205,7 @@ class Task extends Component {
     render() {
         console.log('Task::render')
 
-        const { show, isVisible, inputText } = this.state;
+        const { show, isVisible, taskText, subTaskText, mode } = this.state;
 
         let content = undefined;
 
@@ -170,6 +224,38 @@ class Task extends Component {
             });
         }*/
 
+        let task_input = (
+            <TitleInput>
+                <AppBarTitle>{taskText}</AppBarTitle>
+                <IconButton
+                    color="contrast"
+                    aria-label="Edit"
+                    onClick={this.onEditClick}>
+                    <EditIcon />
+                </IconButton>
+            </TitleInput>
+        );
+
+        let sub_task_dialog = undefined;
+
+        if (mode === Task.MODES.EDIT_TASK) {
+            task_input = (
+                <TitleInput>
+                    <EditTextInput
+                        color={'#ffffff'}
+                        defaultValue={this.task ? this.task.text : undefined}
+                        onCancel={this.onTaskCancel}
+                        onSubmit={this.onTaskSave}
+                    />
+                </TitleInput>
+            );
+        } else if (mode === Task.MODES.EDIT_SUB_TASK) {
+            sub_task_dialog = (
+                <EditDialog
+                    onClose={this.onSubTaskClose} />
+            );
+        }
+
         return (
             <Container
                 innerRef={(el) => this.container = el}
@@ -180,34 +266,23 @@ class Task extends Component {
                         <IconButton color="contrast" aria-label="Close" onClick={this.onClose}>
                             <ArrowBackIcon />
                         </IconButton>
-                        <Input
-                            id="task"
-                            type="text"
-                            value={inputText}
-                            onChange={this.onTitleChange}
-                            onKeyDown={this.onTitleSubmit}
-                            style={{width: '100%', fontSize: '16px', fontWeight: '400', lineHeight: '24px'}}
-                            disableUnderline={true}
-                        />
-                        <IconButton color="contrast" aria-label="Edit">
-                            <EditIcon />
-                        </IconButton>
+                        {task_input}
                     </Toolbar>
                 </AppBar>
                 <Content>
-                    <Paper elevation={2} square style={{width: '100%', padding: '15px 20px 20px'}}>
-                        <Input
-                            id="sub-task"
-                            type="text"
-                            onChange={this.onTitleChange}
-                            onKeyDown={this.onTitleSubmit}
-                            style={{width: '100%'}}
-                        />
-                    </Paper>
                     <List>
                         {content}
                     </List>
                 </Content>
+                <FabContainer>
+                    <Button
+                        fab
+                        color="primary"
+                        onClick={this.onAddSubTaskClick}>
+                        <AddIcon />
+                    </Button>
+                </FabContainer>
+                {sub_task_dialog}
             </Container>
         );
     }

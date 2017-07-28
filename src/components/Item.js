@@ -14,6 +14,13 @@ const Container = styled.div`
     display: flex;
 `;
 
+const ListItemPrimaryAction = styled.div`
+    flex-grow: 1;
+    align-self: stretch;
+    align-items: center;
+    display: flex;
+`;
+
 const { object, func } = PropTypes;
 
 class Item extends Component {
@@ -37,7 +44,7 @@ class Item extends Component {
 
         return (
             <Container>
-                <ListItem key={data.id} dense button divider>
+                <ListItem dense button divider>
                     <Checkbox
                         checked={data.completed}
                         onChange={(evt, checked) => onCompleted(data, checked)}
@@ -46,10 +53,12 @@ class Item extends Component {
                         icon={<RadioButtonUncheckedIcon />}
                         checkedIcon={<CheckCircleIcon />}
                     />
-                    <ListItemText
-                        primary={data.text}
-                        secondary={data.subText}
-                        onClick={() => onClick(data)} />
+                    <ListItemPrimaryAction
+                        onClick={() => onClick(data)}>
+                        <ListItemText
+                            primary={data.text}
+                            secondary={data.subText} />
+                    </ListItemPrimaryAction>
                     <ListItemSecondaryAction>
                         <IconButton aria-label="Delete" onClick={() => onDelete(data)}>
                             <DeleteIcon />

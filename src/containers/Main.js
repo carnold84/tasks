@@ -9,6 +9,8 @@ import Button from 'material-ui/Button';
 import List from 'material-ui/List';
 import AddIcon from 'material-ui-icons/Add';
 
+import { FabContainer } from '../styles';
+
 import { deleteTask, updateTask } from '../store/tasks/actions';
 
 import Task from './Task';
@@ -52,15 +54,8 @@ const Content = styled.div`
 
 const ListContainer = styled.div`
     width: 100%;
-    margin: 20px 0;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.25);
-`;
-
-const FabContainer = styled.div`
-    position: absolute;
-    right: 20px;
-    bottom: 20px;
-    z-index: 2;
+    margin: 0;
+    //box-shadow: 0 0 5px rgba(0, 0, 0, 0.25);
 `;
 
 const SCREENS = {

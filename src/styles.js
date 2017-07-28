@@ -13,3 +13,10 @@ export const AppContainer = styled.div`
     align-items: flex-start;
     display: flex;
 `;
+
+export const FabContainer = styled.div`
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
+    z-index: 2;
+`;

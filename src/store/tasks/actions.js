@@ -27,7 +27,7 @@ const fetchTasks = () => {
     }
 }
 
-const createTask = (text) => {
+const createTask = (text, parentId) => {
     return dispatch => {
 
         const params = {
@@ -36,7 +36,7 @@ const createTask = (text) => {
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({"text": text}),
+            body: JSON.stringify({text, parentId}),
         };
 
         return fetch(TASKS_ENDPOINT, params)
