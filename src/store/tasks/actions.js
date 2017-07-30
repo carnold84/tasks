@@ -13,8 +13,8 @@ const receiveTasks = (tasks) => {
     return {
         type: types.RECEIVE_TASKS,
         tasks: tasks,
-        receivedAt: Date.now()
-    }
+        receivedAt: Date.now(),
+    };
 };
 
 const fetchTasks = () => {
@@ -24,6 +24,23 @@ const fetchTasks = () => {
         return fetch(TASKS_ENDPOINT)
             .then(response => response.json())
             .then(json => dispatch(receiveTasks(json)));
+    };
+}
+
+const receiveTask = (task) => {
+    return {
+        type: types.RECEIVE_TASK,
+        task: task,
+    };
+};
+
+const fetchTask = (id) => {
+    return dispatch => {
+        dispatch(requestTasks());
+
+        return fetch(`${TASKS_ENDPOINT}/${id}`)
+            .then(response => response.json())
+            .then(json => dispatch(receiveTask(json)));
     }
 }
 
@@ -64,7 +81,7 @@ const updateTask = (task) => {
         return fetch(url, params)
             .then(response => console.log(response))
             .then(() => {
-                dispatch(fetchTasks());
+                dispatch(fetchTask(task.id));
             });
     };
 }

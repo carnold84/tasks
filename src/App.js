@@ -21,8 +21,7 @@ const store = createStore(
 );
 
 store
-  .dispatch(fetchTasks())
-  .then(() => console.log(store.getState()))
+  .dispatch(fetchTasks());
 
 const mainPalette = createPalette({
     primary: palette,

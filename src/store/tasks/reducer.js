@@ -21,6 +21,7 @@ const reduce = (state = initialState, action = {}) => {
             isFetching = true;
 
             return {
+                ...state,
                 isFetching,
             };
             
@@ -50,6 +51,47 @@ const reduce = (state = initialState, action = {}) => {
                     tasks.push(task);
                 }
             });
+
+            return {
+                isFetching,
+                tasks,
+                tasksById,
+                subTasksByParentId,
+            };
+            
+        case types.RECEIVE_TASK:
+
+            isFetching = false;
+
+            tasksById = {...state.tasksById};
+            subTasksByParentId = {...state.subTasksByParentId};
+
+            let new_task = action.task;
+
+            // normalise _id to id
+            new_task.id = new_task.id ? new_task.id : new_task._id;
+            
+            tasksById[new_task.id] = new_task;
+            
+            if (new_task.parentId) {
+
+                if (subTasksByParentId[new_task.parentId] === undefined) {
+                    subTasksByParentId[new_task.parentId] = [];
+                }
+
+                subTasksByParentId[new_task.parentId].push(new_task);
+            } else {
+
+                tasks = state.tasks.map(task => {
+
+                    if (new_task.id === task.id) {
+
+                        return new_task;
+                    }
+
+                    return task;
+                });
+            }
 
             return {
                 isFetching,
