@@ -2,6 +2,7 @@
   "name": "todo-web",
   "version": "0.1.0",
   "private": true,
+  "homepage": "http://localhost/tasks/build",
   "devDependencies": {
     "material-ui": "next",
     "material-ui-icons": "^1.0.0-alpha.19",
@@ -11,6 +12,7 @@
     "react-scripts": "1.0.7",
     "redux": "^3.6.0",
     "redux-thunk": "^2.2.0",
+    "source-map-explorer": "^1.4.0",
     "styled-components": "^2.1.0"
   },
   "dependencies": {
@@ -18,6 +20,7 @@
     "react-dom": "^15.6.1"
   },
   "scripts": {
+    "analyze": "source-map-explorer build/static/js/main.*",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",

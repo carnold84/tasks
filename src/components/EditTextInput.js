@@ -95,6 +95,7 @@ class EditTextInput extends Component {
                         type="text"
                         inputRef={el => this.input = el}
                         value={text}
+                        placeholder={'Task...'}
                         onChange={this.onChange}
                         onKeyDown={this.onKeyDown}
                         style={{width: '100%', fontSize: '16px', fontWeight: '400', lineHeight: '24px'}}

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { ListItem, ListItemSecondaryAction, ListItemText } from 'material-ui/List';
 import IconButton from 'material-ui/IconButton';
@@ -7,6 +8,8 @@ import Checkbox from 'material-ui/Checkbox';
 import DeleteIcon from 'material-ui-icons/Delete';
 import CheckCircleIcon from 'material-ui-icons/CheckCircle';
 import RadioButtonUncheckedIcon from 'material-ui-icons/RadioButtonUnchecked';
+
+import { deleteTask, updateTask } from '../store/tasks/actions';
 
 const Container = styled.div`
     width: 100%;
@@ -32,6 +35,22 @@ class Item extends Component {
         onDelete: func,
     };
 
+    onDelete = () => {
+
+        const { data } = this.props;
+        
+        this.props.dispatch(deleteTask(data.id));
+    };
+
+    onCompleted = (checked) => {
+
+        const { data } = this.props;
+
+        data.completed = checked;
+
+        this.props.dispatch(updateTask(data));
+    };
+
     shouldComponentUpdate(nextProps) {
         console.log('shouldComponentUpdate', nextProps.data !== this.props.data)
         return nextProps.data !== this.props.data;
@@ -40,14 +59,14 @@ class Item extends Component {
     render() {
         console.log('Item::render')
 
-        const { data, onClick, onCompleted, onDelete } = this.props;
+        const { data, onClick } = this.props;
 
         return (
             <Container>
                 <ListItem dense button divider>
                     <Checkbox
                         checked={data.completed}
-                        onChange={(evt, checked) => onCompleted(data, checked)}
+                        onChange={(evt, checked) => this.onCompleted(checked)}
                         tabIndex="-1"
                         disableRipple
                         icon={<RadioButtonUncheckedIcon />}
@@ -57,10 +76,11 @@ class Item extends Component {
                         onClick={() => onClick(data)}>
                         <ListItemText
                             primary={data.text}
-                            secondary={data.subText} />
+                            secondary={data.subText}
+                        />
                     </ListItemPrimaryAction>
                     <ListItemSecondaryAction>
-                        <IconButton aria-label="Delete" onClick={() => onDelete(data)}>
+                        <IconButton aria-label="Delete" onClick={() => this.onDelete()}>
                             <DeleteIcon />
                         </IconButton>
                     </ListItemSecondaryAction>
@@ -70,4 +90,4 @@ class Item extends Component {
     }
 }
 
-export default Item;
+export default connect()(Item);

@@ -51,9 +51,6 @@ class EditDialog extends Component {
         text: '',
     };
 
-    onSubmit = () => {
-    };
-
     componentWillMount() {
         const { defaultValue } = this.props;
 
@@ -65,7 +62,7 @@ class EditDialog extends Component {
     }
 
     render() {
-        const { onClose } = this.props;
+        const { onClose, onSubmit } = this.props;
         const { text } = this.state;
 
         return (
@@ -74,7 +71,7 @@ class EditDialog extends Component {
                     <Paper elevation={2} square style={{width: '100%', padding: '10px 10px 10px 20px'}}>
                         <EditTextInput
                             defaultValue={text ? text : undefined}
-                            onSubmit={this.onSubmit}
+                            onSubmit={(text) => onSubmit(text)}
                         />
                     </Paper>
                 </Dialog>

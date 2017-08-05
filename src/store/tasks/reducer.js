@@ -52,6 +52,10 @@ const reduce = (state = initialState, action = {}) => {
                 }
             });
 
+            tasks.forEach(task => {
+                task.children = subTasksByParentId[task.id];
+            });
+
             return {
                 isFetching,
                 tasks,
@@ -70,28 +74,63 @@ const reduce = (state = initialState, action = {}) => {
 
             // normalise _id to id
             new_task.id = new_task.id ? new_task.id : new_task._id;
-            
-            tasksById[new_task.id] = new_task;
-            
-            if (new_task.parentId) {
 
-                if (subTasksByParentId[new_task.parentId] === undefined) {
-                    subTasksByParentId[new_task.parentId] = [];
+            if (tasksById[new_task.id]) {
+            
+                if (new_task.parentId) {
+
+                    let sub_tasks = subTasksByParentId[new_task.parentId];
+
+                    sub_tasks = sub_tasks.map(subTask => {
+
+                        if (new_task.id === subTask.id) {
+                            return new_task;
+                        }
+
+                        return subTask;
+                    });
+
+                    let parent = tasksById[new_task.parentId];
+
+                    if (parent) {
+                        parent.children = sub_tasks;
+                    }
+                } else {
+
+                    tasks = state.tasks.map(task => {
+
+                        if (new_task.id === task.id) {
+                            return new_task;
+                        }
+
+                        return task;
+                    });
+                }
+            } else {
+            
+                if (new_task.parentId) {
+
+                    if (subTasksByParentId[new_task.parentId] === undefined) {
+                        subTasksByParentId[new_task.parentId] = [];
+                    }
+                    
+                    let sub_tasks = subTasksByParentId[new_task.parentId];
+
+                    sub_tasks.push(new_task);
+
+                    let parent = tasksById[new_task.parentId];
+
+                    if (parent) {
+                        parent.children = sub_tasks;
+                    }
                 }
 
-                subTasksByParentId[new_task.parentId].push(new_task);
-            } else {
+                tasks = [...tasks];
 
-                tasks = state.tasks.map(task => {
-
-                    if (new_task.id === task.id) {
-
-                        return new_task;
-                    }
-
-                    return task;
-                });
+                tasks.push(new_task);
             }
+            
+            tasksById[new_task.id] = new_task;
 
             return {
                 isFetching,

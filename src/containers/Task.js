@@ -13,6 +13,8 @@ import EditIcon from 'material-ui-icons/Edit';
 
 import { createTask, updateTask } from '../store/tasks/actions';
 
+import Item from './Item';
+
 import EditTextInput from '../components/EditTextInput';
 import EditDialog from '../components/EditDialog';
 
@@ -25,7 +27,7 @@ const Container = styled.div`
     background-color: #ffffff;
     opacity: ${props => props.show ? '1' : '0'};
     transform: translate3d(${props => props.show ? '0, 0, 0' : '0, 50%, 0'});
-    transition: transform 300ms ease-in-out, opacity 300ms ease-in-out;
+    transition: transform 150ms ease-in-out, opacity 150ms ease-in-out;
     flex-direction: column;
     justify-content: flex-start;
     align-items: flex-start;
@@ -38,7 +40,7 @@ const Content = styled.div`
     height: 100%;
     flex-direction: column;
     justify-content: flex-start;
-    align-items: flex-start;
+    align-items: stretch;
     flex-grow: 1;
     display: flex;
 `;
@@ -164,19 +166,26 @@ class Task extends Component {
 
         const { show, tasksById } = this.props;
         const { taskId } = nextProps;
+
+        console.log(nextProps)
+
+        if (nextProps.show) {
+            this.task = tasksById[taskId];
+
+            console.log(this.task)
+        }
         
         // only update if changed
         if (nextProps.show !== show) {
 
             if (nextProps.show === true) {
 
-                this.task = tasksById[taskId];
-
                 const taskText = this.task ? this.task.text : '';
+                const mode = this.task ? undefined : Task.MODES.EDIT_TASK;
 
                 this.setState({
                     isVisible: true,
-                    mode: undefined,
+                    mode,
                     taskText,
                 }, () => {
 
@@ -209,20 +218,15 @@ class Task extends Component {
 
         let content = undefined;
 
-        /*if (task.subTasks) {
-            content = task.subTasks.map((subTask) => {
+        if (this.task && this.task.children) {
+            content = this.task.children.map((childTask) => {
                 return (
-                    <ListItem dense button key={subTask.id}>
-                        <Checkbox
-                            checked={subTask.complete}
-                            tabIndex="-1"
-                            disableRipple
-                        />
-                        <ListItemText primary={subTask.name} />
-                    </ListItem>
+                    <Item
+                        key={childTask.id}
+                        data={childTask} />
                 );
             });
-        }*/
+        }
 
         let task_input = (
             <TitleInput>
@@ -252,7 +256,8 @@ class Task extends Component {
         } else if (mode === Task.MODES.EDIT_SUB_TASK) {
             sub_task_dialog = (
                 <EditDialog
-                    onClose={this.onSubTaskClose} />
+                    onClose={this.onSubTaskClose}
+                    onSubmit={this.onSubTaskSave} />
             );
         }
 
@@ -270,7 +275,7 @@ class Task extends Component {
                     </Toolbar>
                 </AppBar>
                 <Content>
-                    <List>
+                    <List disablePadding>
                         {content}
                     </List>
                 </Content>

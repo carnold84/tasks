@@ -11,11 +11,9 @@ import AddIcon from 'material-ui-icons/Add';
 
 import { FabContainer } from '../styles';
 
-import { deleteTask, updateTask } from '../store/tasks/actions';
-
 import Task from './Task';
 
-import Item from '../components/Item';
+import Item from './Item';
 
 const Container = styled.div`
     position: absolute;
@@ -72,6 +70,7 @@ class Main extends Component {
 
     state = {
         currentScreen: undefined,
+        selectedTaskId: undefined,
     };
 
     onAddTaskClick = () => {
@@ -80,11 +79,6 @@ class Main extends Component {
         this.setState({
             currentScreen: SCREENS.TASK,
         });
-    };
-
-    onTaskDelete = (task) => {
-        
-        this.props.dispatch(deleteTask(task.id));
     };
 
     onTaskClick = (task) => {
@@ -96,13 +90,6 @@ class Main extends Component {
         });
     };
 
-    onTaskCompleted = (task, checked) => {
-
-        task.completed = checked;
-
-        this.props.dispatch(updateTask(task));
-    };
-
     onTaskClose = () => {
 
         // hide the task screen
@@ -112,18 +99,17 @@ class Main extends Component {
         });
     };
 
-    processTasks = () => {
+    render() {
+        console.log('Main::render')
 
-        const { tasks, subTasksByParentId } = this.props;
+        const { tasks } = this.props;
+        const { currentScreen, selectedTaskId } = this.state;
 
-        let processed_tasks = [];
+        let content = undefined;
 
-        if (tasks !== undefined) {
-
-            let child_tasks = {};
-
-            processed_tasks = tasks.map(task => {
-                task.children = subTasksByParentId[task.id];
+        if (tasks) {
+            
+            content = tasks.map((task) => {
                 
                 if (task.children) {
                     let text = task.children.map(child => {
@@ -131,25 +117,7 @@ class Main extends Component {
                     });
                     task.subText = text.join(', ');
                 }
-
-                return task;
-            });
-        }   
-
-        return processed_tasks;
-    };
-
-    render() {
-        console.log('Main::render')
-
-        const { currentScreen, selectedTaskId } = this.state;
-
-        let content = undefined;
-        let processed_tasks = this.processTasks();
-
-        if (processed_tasks) {
-            
-            content = processed_tasks.map((task) => {
+                
                 return (
                     <Item
                         key={task.id}
