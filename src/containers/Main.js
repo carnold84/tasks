@@ -100,9 +100,7 @@ class Main extends Component {
     };
 
     render() {
-        console.log('Main::render')
-
-        const { tasks } = this.props;
+        const { tasks, tasksById } = this.props;
         const { currentScreen, selectedTaskId } = this.state;
 
         let content = undefined;
@@ -129,6 +127,8 @@ class Main extends Component {
             });
         }
 
+        const selectedTask = selectedTaskId ? tasksById[selectedTaskId] : undefined;
+
         return (
             <Container>
                 <MainContainer>
@@ -152,7 +152,7 @@ class Main extends Component {
                 </MainContainer>
                 <Task
                     show={currentScreen === SCREENS.TASK}
-                    taskId={selectedTaskId}
+                    task={selectedTask}
                     onClose={this.onTaskClose} />
             </Container>
         );
@@ -163,6 +163,7 @@ const mapStateToProps = (state) => {
   return {
     isFetching: state.tasks.isFetching,
     tasks: state.tasks.tasks,
+    tasksById: state.tasks.tasksById,
     subTasksByParentId: state.tasks.subTasksByParentId,
   }
 }

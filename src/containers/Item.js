@@ -36,14 +36,14 @@ class Item extends Component {
     };
 
     onDelete = () => {
-
         const { data } = this.props;
         
         this.props.dispatch(deleteTask(data.id));
     };
 
-    onCompleted = (checked) => {
+    onCompleted = (evt, checked) => {
 
+        console.log(checked)
         const { data } = this.props;
 
         data.completed = checked;
@@ -51,36 +51,43 @@ class Item extends Component {
         this.props.dispatch(updateTask(data));
     };
 
+    onClick = () => {
+        const { data, onClick } = this.props;
+
+        if (onClick) {
+            onClick(data);
+        }
+    };
+
     shouldComponentUpdate(nextProps) {
-        console.log('shouldComponentUpdate', nextProps.data !== this.props.data)
         return nextProps.data !== this.props.data;
     }
 
     render() {
-        console.log('Item::render')
+        const { data } = this.props;
 
-        const { data, onClick } = this.props;
+        console.log(data)
 
         return (
             <Container>
                 <ListItem dense button divider>
                     <Checkbox
                         checked={data.completed}
-                        onChange={(evt, checked) => this.onCompleted(checked)}
+                        onChange={this.onCompleted}
                         tabIndex="-1"
                         disableRipple
                         icon={<RadioButtonUncheckedIcon />}
                         checkedIcon={<CheckCircleIcon />}
                     />
                     <ListItemPrimaryAction
-                        onClick={() => onClick(data)}>
+                        onClick={this.onClick}>
                         <ListItemText
                             primary={data.text}
                             secondary={data.subText}
                         />
                     </ListItemPrimaryAction>
                     <ListItemSecondaryAction>
-                        <IconButton aria-label="Delete" onClick={() => this.onDelete()}>
+                        <IconButton aria-label="Delete" onClick={this.onDelete}>
                             <DeleteIcon />
                         </IconButton>
                     </ListItemSecondaryAction>

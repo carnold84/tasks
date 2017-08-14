@@ -1,10 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import Input from 'material-ui/Input/Input';
 import Paper from 'material-ui/Paper';
-import IconButton from 'material-ui/IconButton';
-import CheckIcon from 'material-ui-icons/Check';
 
 import EditTextInput from './EditTextInput';
 

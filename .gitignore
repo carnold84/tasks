@@ -52,3 +52,6 @@ Temporary Items
 # Project folders
 node_modules
 build
+
+# Project files
+src/config.js
