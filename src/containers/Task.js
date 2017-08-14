@@ -149,15 +149,25 @@ class Task extends Component {
     };
 
     onEditClick = () => {
-        this.setState({
-            mode: Task.MODES.EDIT_TASK,
-        });
+        let mode = Task.MODES.EDIT_TASK;
+        this.setState({mode});
+        window.history.pushState({mode}, mode);
     };
 
     onAddSubTaskClick = () => {
-        this.setState({
-            mode: Task.MODES.EDIT_SUB_TASK,
-        });
+        let mode = Task.MODES.EDIT_SUB_TASK;
+        this.setState({mode});
+        window.history.pushState({mode}, mode);
+    };
+    
+    onBack = () => {
+        if (this.state.mode === Task.MODES.EDIT_TASK) {
+            this.onTaskCancel();
+        } else if (this.state.mode === Task.MODES.EDIT_SUB_TASK) {
+            this.onSubTaskClose();
+        } else {
+            this.onClose();
+        }
     };
 
     componentWillReceiveProps(nextProps) {
@@ -171,6 +181,11 @@ class Task extends Component {
 
                 const taskText = task ? task.text : '';
                 const mode = task ? undefined : Task.MODES.EDIT_TASK;
+
+                if (mode === Task.MODES.EDIT_TASK) {
+                    window.history.pushState({mode}, mode);
+                }
+                window.addEventListener('popstate', this.onBack);
 
                 this.setState({
                     isVisible: true,
@@ -189,6 +204,7 @@ class Task extends Component {
                 this.setState({
                     show: false,
                 });
+                window.removeEventListener('popstate', this.onBack);
             }
         }
     };

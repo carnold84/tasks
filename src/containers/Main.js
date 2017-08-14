@@ -9,6 +9,7 @@ import Button from 'material-ui/Button';
 import List from 'material-ui/List';
 import AddIcon from 'material-ui-icons/Add';
 
+import config from '../config';
 import { FabContainer } from '../styles';
 
 import Task from './Task';
@@ -75,19 +76,22 @@ class Main extends Component {
 
     onAddTaskClick = () => {
 
-        // show the task screen
-        this.setState({
-            currentScreen: SCREENS.TASK,
-        });
+        this.openTask();
     };
 
     onTaskClick = (task) => {
 
+        this.openTask(task.id);
+    };
+
+    openTask = (selectedTaskId) => {
+        
         // hide the task screen
         this.setState({
             currentScreen: SCREENS.TASK,
-            selectedTaskId: task.id,
+            selectedTaskId,
         });
+        window.history.pushState({screen: SCREENS.TASK}, SCREENS.TASK);
     };
 
     onTaskClose = () => {
@@ -134,7 +138,7 @@ class Main extends Component {
                 <MainContainer>
                     <AppBar position="static">
                         <Toolbar>
-                            <Typography type="subheading" color="inherit">Tasks</Typography>
+                            <Typography type="subheading" color="inherit">{config.appName}</Typography>
                         </Toolbar>
                     </AppBar>
                     <Content>

@@ -87,29 +87,37 @@ class EditTextInput extends Component {
         const { text } = this.state;
         const { color, onCancel } = this.props;
 
-        return (
-            <ClickOutside style={{flexGrow: 1}} onClickOutside={onCancel ? onCancel : undefined}>
-                <Container color={color}>
-                    <Input
-                        id="input"
-                        type="text"
-                        inputRef={el => this.input = el}
-                        value={text}
-                        placeholder={'Task...'}
-                        onChange={this.onChange}
-                        onKeyDown={this.onKeyDown}
-                        style={{width: '100%', fontSize: '16px', fontWeight: '400', lineHeight: '24px'}}
-                        disableUnderline={true}
-                    />
-                    <IconButton
-                        aria-label="Save"
-                        onClick={this.onSaveClick}>
-                        <CheckIcon
-                            color={color} />
-                    </IconButton>
-                </Container>
-            </ClickOutside>
+        const content = (
+            <Container color={color}>
+                <Input
+                    id="input"
+                    type="text"
+                    inputRef={el => this.input = el}
+                    value={text}
+                    placeholder={'Task...'}
+                    onChange={this.onChange}
+                    onKeyDown={this.onKeyDown}
+                    style={{width: '100%', fontSize: '16px', fontWeight: '400', lineHeight: '24px'}}
+                    disableUnderline={true}
+                />
+                <IconButton
+                    aria-label="Save"
+                    onClick={this.onSaveClick}>
+                    <CheckIcon
+                        color={color} />
+                </IconButton>
+            </Container>
         );
+
+        if (onCancel) {
+            return (
+                <ClickOutside style={{flexGrow: 1}} onClickOutside={onCancel}>
+                    {content}
+                </ClickOutside>
+            );
+        } else {
+            return content;
+        }
     }
 };
 

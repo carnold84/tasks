@@ -1,4 +1,5 @@
 export default {
+    appName: 'Structure',
     development: {
         ENDPOINT: 'http://localhost:3002',
     },

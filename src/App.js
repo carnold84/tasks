@@ -5,6 +5,7 @@ import thunkMiddleware from 'redux-thunk';
 import { MuiThemeProvider, createMuiTheme, createPalette, createTypography  } from 'material-ui/styles';
 import palette from './theme';
 
+import config from './config';
 import * as reducers from './store/reducers';
 import { fetchTasks } from './store/tasks/actions';
 
@@ -38,6 +39,10 @@ const theme = createMuiTheme({
 });
 
 class App extends Component {
+    
+    componentDidMount() {
+        document.querySelector('title').textContent = config.appName;
+    }
     
     render() {
         return (
