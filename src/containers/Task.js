@@ -59,19 +59,19 @@ const AppBarTitle = styled.h2`
     display: flex;
 `;
 
-const { string, bool, func } = PropTypes;
+const { object, bool, func } = PropTypes;
 
 class Task extends Component {
 
     static propTypes = {
         show: bool,
-        taskId: string,
+        task: object,
         onClose: func.isRequired,
     };
 
     defaultProps = {
         show: false,
-        taskId: undefined,
+        task: undefined,
     };
 
     static MODES = {
@@ -87,19 +87,17 @@ class Task extends Component {
         isVisible: false,
     };
 
-    task = undefined;
     subTask = undefined;
 
     onTaskSave = (text) => {
-        console.log('onTaskSave', text)
-        const { dispatch } = this.props;
+        const { task, dispatch } = this.props;
 
-        if (this.task === undefined) {
+        if (task === undefined) {
             dispatch(createTask(text));
         } else {
-            this.task.text = text;
+            task.text = text;
 
-            dispatch(updateTask(this.task));
+            dispatch(updateTask(task));
         }
 
         this.setState({
@@ -115,10 +113,10 @@ class Task extends Component {
     }
 
     onSubTaskSave = (text) => {
-        const { dispatch } = this.props;
+        const { task, dispatch } = this.props;
 
         if (this.subTask === undefined) {
-            dispatch(createTask(text, this.task.id));
+            dispatch(createTask(text, task.id));
         } else {
             this.subTask.text = text;
 
@@ -163,25 +161,16 @@ class Task extends Component {
     };
 
     componentWillReceiveProps(nextProps) {
-
-        const { show, tasksById } = this.props;
-        const { taskId } = nextProps;
-
-        console.log(nextProps)
-
-        if (nextProps.show) {
-            this.task = tasksById[taskId];
-
-            console.log(this.task)
-        }
+        const { show } = this.props;
+        const { task } = nextProps;
         
         // only update if changed
         if (nextProps.show !== show) {
 
             if (nextProps.show === true) {
 
-                const taskText = this.task ? this.task.text : '';
-                const mode = this.task ? undefined : Task.MODES.EDIT_TASK;
+                const taskText = task ? task.text : '';
+                const mode = task ? undefined : Task.MODES.EDIT_TASK;
 
                 this.setState({
                     isVisible: true,
@@ -205,21 +194,19 @@ class Task extends Component {
     };
 
     componentDidUpdate() {
-            
         if (this.props.show === false && this.state.isVisible === true) {
             this.container.addEventListener('transitionend', this.onHideComplete);
         }
     };
 
     render() {
-        console.log('Task::render')
-
-        const { show, isVisible, taskText, subTaskText, mode } = this.state;
+        const { task } = this.props;
+        const { show, isVisible, taskText, mode } = this.state;
 
         let content = undefined;
 
-        if (this.task && this.task.children) {
-            content = this.task.children.map((childTask) => {
+        if (task && task.children) {
+            content = task.children.map((childTask) => {
                 return (
                     <Item
                         key={childTask.id}
@@ -247,7 +234,7 @@ class Task extends Component {
                 <TitleInput>
                     <EditTextInput
                         color={'#ffffff'}
-                        defaultValue={this.task ? this.task.text : undefined}
+                        defaultValue={task ? task.text : undefined}
                         onCancel={this.onTaskCancel}
                         onSubmit={this.onTaskSave}
                     />
@@ -293,13 +280,4 @@ class Task extends Component {
     }
 }
 
-const mapStateToProps = (state) => {
-  return {
-    tasksById: state.tasks.tasksById,
-  }
-}
-
-export default connect(
-  mapStateToProps,
-  null,
-)(Task);
+export default connect()(Task);

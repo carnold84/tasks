@@ -1,6 +1,12 @@
 import * as types from './actionTypes';
+import config from '../../config';
 
-const ENDPOINT = 'http://localhost:3002';
+let ENDPOINT = config.production.ENDPOINT;
+
+if (process.env.NODE_ENV === 'development') {
+    ENDPOINT = config.development.ENDPOINT;
+}
+
 const TASKS_ENDPOINT = `${ENDPOINT}/tasks`;
 
 const requestTasks = () => {
