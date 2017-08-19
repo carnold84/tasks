@@ -84,7 +84,6 @@ const reduce = (state = initialState, action = {}) => {
 
             // store the received task
             let received_task = action.task;
-            console.log(received_task)
 
             // normalise _id to id
             received_task.id = received_task.id ? received_task.id : received_task._id;

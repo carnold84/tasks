@@ -47,7 +47,6 @@ class EditTextInput extends Component {
     };
 
     onKeyDown = (event) => {
-        console.log('onKeyDown')
         if (event.keyCode) {
             // RETURN
             if (event.keyCode === 13) {
@@ -57,12 +56,10 @@ class EditTextInput extends Component {
     };
 
     onSaveClick = (event) => {
-        console.log('onSaveClick')
         this.onSubmit();
     };
 
     onSubmit = () => {
-        console.log('onSubmit')
         const { onSubmit } = this.props;
         const text = this.state.text;
 

@@ -107,9 +107,7 @@ class Task extends Component {
     }
 
     onTaskCancel = () => {
-        this.setState({
-            mode: undefined,
-        });
+        window.history.back();
     }
 
     onSubTaskSave = (text) => {
@@ -130,9 +128,7 @@ class Task extends Component {
     }
 
     onSubTaskClose = () => {
-        this.setState({
-            mode: undefined,
-        });
+        window.history.back();
     }
 
     onHideComplete = () => {
@@ -162,9 +158,13 @@ class Task extends Component {
     
     onBack = () => {
         if (this.state.mode === Task.MODES.EDIT_TASK) {
-            this.onTaskCancel();
+            this.setState({
+                mode: undefined,
+            });
         } else if (this.state.mode === Task.MODES.EDIT_SUB_TASK) {
-            this.onSubTaskClose();
+            this.setState({
+                mode: undefined,
+            });
         } else {
             this.onClose();
         }
@@ -271,7 +271,10 @@ class Task extends Component {
                 isVisible={isVisible}>
                 <AppBar position="static">
                     <Toolbar disableGutters>
-                        <IconButton color="contrast" aria-label="Close" onClick={this.onClose}>
+                        <IconButton
+                            color="contrast"
+                            aria-label="Close"
+                            onClick={this.onClose}>
                             <ArrowBackIcon />
                         </IconButton>
                         {task_input}

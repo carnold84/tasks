@@ -43,7 +43,6 @@ class Item extends Component {
 
     onCompleted = (evt, checked) => {
 
-        console.log(checked)
         const { data } = this.props;
 
         data.completed = checked;
@@ -65,8 +64,6 @@ class Item extends Component {
 
     render() {
         const { data } = this.props;
-
-        console.log(data)
 
         return (
             <Container>
