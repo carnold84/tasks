@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+import PubSub from 'pubsub-js';
 import styled from 'styled-components';
 import { ListItem, ListItemSecondaryAction, ListItemText } from 'material-ui/List';
 import IconButton from 'material-ui/IconButton';
@@ -9,7 +9,7 @@ import DeleteIcon from 'material-ui-icons/Delete';
 import CheckCircleIcon from 'material-ui-icons/CheckCircle';
 import RadioButtonUncheckedIcon from 'material-ui-icons/RadioButtonUnchecked';
 
-import { deleteTask, updateTask } from '../store/tasks/actions';
+import Store from '../store';
 
 const Container = styled.div`
     width: 100%;
@@ -38,7 +38,7 @@ class Item extends Component {
     onDelete = () => {
         const { data } = this.props;
         
-        this.props.dispatch(deleteTask(data.id));
+        PubSub.publish(Store.EVENTS.TASK_DELETE, data.id);
     };
 
     onCompleted = (evt, checked) => {
@@ -46,8 +46,8 @@ class Item extends Component {
         const { data } = this.props;
 
         data.completed = checked;
-
-        this.props.dispatch(updateTask(data));
+        
+        PubSub.publish(Store.EVENTS.TASK_UPDATE, data);
     };
 
     onClick = () => {
@@ -94,4 +94,4 @@ class Item extends Component {
     }
 }
 
-export default connect()(Item);
+export default Item;

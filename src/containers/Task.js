@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import styled from 'styled-components';
+import PubSub from 'pubsub-js';
 import AppBar from 'material-ui/AppBar';
 import Toolbar from 'material-ui/Toolbar';
 import IconButton from 'material-ui/IconButton';
@@ -11,10 +11,11 @@ import ArrowBackIcon from 'material-ui-icons/ArrowBack';
 import AddIcon from 'material-ui-icons/Add';
 import EditIcon from 'material-ui-icons/Edit';
 
-import { createTask, updateTask } from '../store/tasks/actions';
+import Store from '../store';
 
 import Item from './Item';
 
+import EmptyMessage from '../components/EmptyMessage';
 import EditTextInput from '../components/EditTextInput';
 import EditDialog from '../components/EditDialog';
 
@@ -90,14 +91,16 @@ class Task extends Component {
     subTask = undefined;
 
     onTaskSave = (text) => {
-        const { task, dispatch } = this.props;
+        const { task } = this.props;
 
         if (task === undefined) {
-            dispatch(createTask(text));
+            PubSub.publish(Store.EVENTS.TASK_CREATE, {
+                text: text,
+            });
         } else {
             task.text = text;
 
-            dispatch(updateTask(task));
+            PubSub.publish(Store.EVENTS.TASK_UPDATE, task);
         }
 
         this.setState({
@@ -111,14 +114,17 @@ class Task extends Component {
     }
 
     onSubTaskSave = (text) => {
-        const { task, dispatch } = this.props;
+        const { task } = this.props;
 
         if (this.subTask === undefined) {
-            dispatch(createTask(text, task.id));
+            PubSub.publish(Store.EVENTS.TASK_CREATE, {
+                text: text,
+                parentId: task.id,
+            });
         } else {
             this.subTask.text = text;
 
-            dispatch(updateTask(this.subTask));
+            PubSub.publish(Store.EVENTS.TASK_UPDATE, this.subTask);
         }
 
         this.setState({
@@ -222,13 +228,30 @@ class Task extends Component {
         let content = undefined;
 
         if (task && task.children) {
-            content = task.children.map((childTask) => {
-                return (
-                    <Item
-                        key={childTask.id}
-                        data={childTask} />
-                );
-            });
+            content = (
+                <List disablePadding>
+                    {
+                        task.children.map((childTask) => {
+                            return (
+                                <Item
+                                    key={childTask.id}
+                                    data={childTask} />
+                            );
+                        })
+                    }
+                </List>
+            );
+        } else {
+            content = (
+                <EmptyMessage
+                    title={'You Have No Tasks.'}
+                    text={'Feel Free To Add One.'}
+                    action={{
+                        title: 'Add Task',
+                        onClick: this.onAddSubTaskClick,
+                    }}
+                />
+            );
         }
 
         let task_input = (
@@ -281,9 +304,7 @@ class Task extends Component {
                     </Toolbar>
                 </AppBar>
                 <Content>
-                    <List disablePadding>
-                        {content}
-                    </List>
+                    {content}
                 </Content>
                 <FabContainer>
                     <Button
@@ -299,4 +320,4 @@ class Task extends Component {
     }
 }
 
-export default connect()(Task);
+export default Task;

@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { withStyles, createStyleSheet } from 'material-ui/styles';
 import AppBar from 'material-ui/AppBar';
@@ -14,6 +13,7 @@ import { FabContainer } from '../styles';
 
 import Task from './Task';
 
+import EmptyMessage from '../components/EmptyMessage';
 import Item from './Item';
 
 const Container = styled.div`
@@ -104,31 +104,47 @@ class Main extends Component {
     };
 
     render() {
-        const { tasks, tasksById } = this.props;
+        const { tasks, tasksById } = this.props.data;
         const { currentScreen, selectedTaskId } = this.state;
 
         let content = undefined;
 
-        if (tasks) {
-            
-            content = tasks.map((task) => {
+        if (tasks.length > 0) {
+            content = (
+                <List disablePadding>
+                    {
+                        tasks.map((task) => {
                 
-                if (task.children) {
-                    let text = task.children.map(child => {
-                        return child.text;
-                    });
-                    task.subText = text.join(', ');
-                }
-                
-                return (
-                    <Item
-                        key={task.id}
-                        data={task}
-                        onClick={this.onTaskClick}
-                        onDelete={this.onTaskDelete}
-                        onCompleted={this.onTaskCompleted} />
-                );
-            });
+                            if (task.children) {
+                                let text = task.children.map(child => {
+                                    return child.text;
+                                });
+                                task.subText = text.join(', ');
+                            }
+                            
+                            return (
+                                <Item
+                                    key={task.id}
+                                    data={task}
+                                    onClick={this.onTaskClick}
+                                    onDelete={this.onTaskDelete}
+                                    onCompleted={this.onTaskCompleted} />
+                            );
+                        })
+                    }
+                </List>
+            );
+        } else {
+            content = (
+                <EmptyMessage
+                    title={'You Have No Tasks.'}
+                    text={'Feel Free To Add One.'}
+                    action={{
+                        title: 'Add Task',
+                        onClick: this.onAddTaskClick,
+                    }}
+                />
+            );
         }
 
         const selectedTask = selectedTaskId ? tasksById[selectedTaskId] : undefined;
@@ -143,9 +159,7 @@ class Main extends Component {
                     </AppBar>
                     <Content>
                         <ListContainer>
-                            <List disablePadding>
-                                {content}
-                            </List>
+                            {content}
                         </ListContainer>
                     </Content>
                     <FabContainer>
@@ -163,16 +177,4 @@ class Main extends Component {
     }
 }
 
-const mapStateToProps = (state) => {
-  return {
-    isFetching: state.tasks.isFetching,
-    tasks: state.tasks.tasks,
-    tasksById: state.tasks.tasksById,
-    subTasksByParentId: state.tasks.subTasksByParentId,
-  }
-}
-
-export default connect(
-  mapStateToProps,
-  null,
-)(withStyles(styleSheet)(Main));
+export default withStyles(styleSheet)(Main);

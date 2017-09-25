@@ -1,28 +1,14 @@
 import React, { Component } from 'react';
-import { createStore, applyMiddleware, combineReducers, compose } from 'redux';
-import { Provider } from 'react-redux';
-import thunkMiddleware from 'redux-thunk';
 import { MuiThemeProvider, createMuiTheme, createPalette, createTypography  } from 'material-ui/styles';
 import palette from './theme';
+import PubSub from 'pubsub-js';
 
 import config from './config';
-import * as reducers from './store/reducers';
-import { fetchTasks } from './store/tasks/actions';
+import Store from './store';
 
 import { AppContainer } from './styles';
 
 import Main from './containers/Main';
-
-const store = createStore(
-    combineReducers(reducers),
-    compose(
-        applyMiddleware(thunkMiddleware), 
-        window.devToolsExtension ? window.devToolsExtension() : f => f,
-    ),
-);
-
-store
-  .dispatch(fetchTasks());
 
 const mainPalette = createPalette({
     primary: palette,
@@ -40,19 +26,43 @@ const theme = createMuiTheme({
 
 class App extends Component {
     
+    state = {
+        data: {
+            tasks: [],
+            tasksById: {},
+            subTasksByParentId: {},
+        },
+    };
+
+    store = undefined;
+
+    onTasksReceived = () => {
+        const data = this.store.getState();
+
+        this.setState({data});
+    };
+    
     componentDidMount() {
         document.querySelector('title').textContent = config.appName;
+        
+        // unsubscribe all events first in case component remounts
+        PubSub.clearAllSubscriptions();
+        PubSub.subscribe(Store.EVENTS.TASKS_RECEIVED, this.onTasksReceived);
+
+        if (this.store === undefined) {
+            this.store = new Store();
+        }
     }
     
     render() {
         return (
-            <Provider store={store}>
-                <MuiThemeProvider theme={theme}>
-                    <AppContainer>
-                        <Main />
-                    </AppContainer>
-                </MuiThemeProvider>
-            </Provider>
+            <MuiThemeProvider theme={theme}>
+                <AppContainer>
+                    <Main 
+                        data={this.state.data}
+                    />
+                </AppContainer>
+            </MuiThemeProvider>
         );
     }
 }
