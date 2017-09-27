@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
+import _isEmpty from 'lodash/isEmpty';
 import { withStyles, createStyleSheet } from 'material-ui/styles';
 import AppBar from 'material-ui/AppBar';
 import Toolbar from 'material-ui/Toolbar';
@@ -7,6 +8,7 @@ import Typography from 'material-ui/Typography';
 import Button from 'material-ui/Button';
 import List from 'material-ui/List';
 import AddIcon from 'material-ui-icons/Add';
+import { CircularProgress } from 'material-ui/Progress';
 
 import config from '../config';
 import { FabContainer } from '../styles';
@@ -51,10 +53,15 @@ const Content = styled.div`
     z-index: 1;
 `;
 
-const ListContainer = styled.div`
+const CircularContainer = styled.div`
     width: 100%;
-    margin: 0;
-    //box-shadow: 0 0 5px rgba(0, 0, 0, 0.25);
+    height: 100%;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    flex-grow: 1;
+    display: flex;
+    z-index: 2;
 `;
 
 const SCREENS = {
@@ -104,48 +111,58 @@ class Main extends Component {
     };
 
     render() {
-        const { tasks, tasksById } = this.props.data;
+        const { data } = this.props;
+        const { tasks, tasksById } = data;
         const { currentScreen, selectedTaskId } = this.state;
 
         let content = undefined;
 
-        if (tasks.length > 0) {
+        if (_isEmpty(data)) {
             content = (
-                <List disablePadding>
-                    {
-                        tasks.map((task) => {
-                
-                            if (task.children) {
-                                let text = task.children.map(child => {
-                                    return child.text;
-                                });
-                                task.subText = text.join(', ');
-                            }
-                            
-                            return (
-                                <Item
-                                    key={task.id}
-                                    data={task}
-                                    onClick={this.onTaskClick}
-                                    onDelete={this.onTaskDelete}
-                                    onCompleted={this.onTaskCompleted} />
-                            );
-                        })
-                    }
-                </List>
+                <CircularContainer>
+                    <CircularProgress />
+                </CircularContainer>
             );
         } else {
-            content = (
-                <EmptyMessage
-                    title={'You Have No Tasks.'}
-                    text={'Feel Free To Add One.'}
-                    action={{
-                        title: 'Add Task',
-                        onClick: this.onAddTaskClick,
-                    }}
-                />
-            );
+            if (tasks.length > 0) {
+                content = (
+                    <List disablePadding>
+                        {
+                            tasks.map((task) => {
+                    
+                                if (task.children) {
+                                    let text = task.children.map(child => {
+                                        return child.text;
+                                    });
+                                    task.subText = text.join(', ');
+                                }
+                                
+                                return (
+                                    <Item
+                                        key={task.id}
+                                        data={task}
+                                        onClick={this.onTaskClick}
+                                        onDelete={this.onTaskDelete}
+                                        onCompleted={this.onTaskCompleted} />
+                                );
+                            })
+                        }
+                    </List>
+                );
+            } else {
+                content = (
+                    <EmptyMessage
+                        title={'You Have No Tasks.'}
+                        text={'Feel Free To Add One.'}
+                        action={{
+                            title: 'Add Task',
+                            onClick: this.onAddTaskClick,
+                        }}
+                    />
+                );
+            }
         }
+        
 
         const selectedTask = selectedTaskId ? tasksById[selectedTaskId] : undefined;
 
@@ -158,9 +175,7 @@ class Main extends Component {
                         </Toolbar>
                     </AppBar>
                     <Content>
-                        <ListContainer>
-                            {content}
-                        </ListContainer>
+                        {content}
                     </Content>
                     <FabContainer>
                         <Button fab color="primary" onClick={this.onAddTaskClick}>

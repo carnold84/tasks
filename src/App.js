@@ -27,11 +27,7 @@ const theme = createMuiTheme({
 class App extends Component {
     
     state = {
-        data: {
-            tasks: [],
-            tasksById: {},
-            subTasksByParentId: {},
-        },
+        data: {},
     };
 
     store = undefined;
