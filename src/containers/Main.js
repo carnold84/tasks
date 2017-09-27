@@ -112,13 +112,12 @@ class Main extends Component {
     };
 
     render() {
-        const { data } = this.props;
-        const { tasks, tasksById } = data;
+        const { tasks, tasksById } = this.props;
         const { currentScreen, selectedTaskId } = this.state;
 
         let content = undefined;
 
-        if (_isEmpty(data)) {
+        if (_isEmpty(tasks)) {
             content = (
                 <ProgressContainer>
                     <CircularProgress />
