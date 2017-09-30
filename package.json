@@ -17,8 +17,8 @@
     "styled-components": "^2.1.2"
   },
   "dependencies": {
-    "react": "^15.6.1",
-    "react-dom": "^15.6.1"
+    "react": "^16.0.0",
+    "react-dom": "^16.0.0"
   },
   "scripts": {
     "analyze": "source-map-explorer build/static/js/main.*",

@@ -69,7 +69,7 @@ class Task extends Component {
         onClose: func.isRequired,
     };
 
-    defaultProps = {
+    static defaultProps = {
         show: false,
         task: undefined,
     };
@@ -259,7 +259,6 @@ class Task extends Component {
         } else if (mode === Task.MODES.EDIT_SUB_TASK) {
             sub_task_dialog = (
                 <EditDialog
-                    onClose={this.onSubTaskClose}
                     onSubmit={this.onSubTaskSave} />
             );
         }

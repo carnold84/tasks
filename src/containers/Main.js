@@ -70,9 +70,9 @@ const SCREENS = {
 };
 
 const styleSheet = createStyleSheet('Main', {
-  appBar: {
-    fontFamily: 'inherit',
-  },
+    appBar: {
+        fontFamily: 'inherit',
+    },
 });
 
 class Main extends Component {
@@ -93,13 +93,13 @@ class Main extends Component {
     };
 
     openTask = (selectedTaskId) => {
-        
+
         // hide the task screen
         this.setState({
             currentScreen: SCREENS.TASK,
             selectedTaskId,
         });
-        window.history.pushState({screen: SCREENS.TASK}, SCREENS.TASK);
+        window.history.pushState({ screen: SCREENS.TASK }, SCREENS.TASK);
     };
 
     onTaskClose = () => {
@@ -129,14 +129,14 @@ class Main extends Component {
                     <List disablePadding>
                         {
                             tasks.map((task) => {
-                    
+
                                 if (task.children) {
                                     let text = task.children.map(child => {
                                         return child.text;
                                     });
                                     task.subText = text.join(', ');
                                 }
-                                
+
                                 return (
                                     <Item
                                         key={task.id}
@@ -177,7 +177,11 @@ class Main extends Component {
                         {content}
                     </Content>
                     <FabContainer>
-                        <Button fab color="primary" onClick={this.onAddTaskClick}>
+                        <Button
+                            fab
+                            color="primary"
+                            focusable={false}
+                            onClick={this.onAddTaskClick}>
                             <AddIcon />
                         </Button>
                     </FabContainer>
@@ -192,15 +196,15 @@ class Main extends Component {
 }
 
 const mapStateToProps = (state) => {
-  return {
-    isFetching: state.tasks.isFetching,
-    tasks: state.tasks.tasks,
-    tasksById: state.tasks.tasksById,
-    subTasksByParentId: state.tasks.subTasksByParentId,
-  }
+    return {
+        isFetching: state.tasks.isFetching,
+        tasks: state.tasks.tasks,
+        tasksById: state.tasks.tasksById,
+        subTasksByParentId: state.tasks.subTasksByParentId,
+    }
 }
 
 export default connect(
-  mapStateToProps,
-  null,
+    mapStateToProps,
+    null,
 )(withStyles(styleSheet)(Main));
