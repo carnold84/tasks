@@ -259,7 +259,6 @@ class Task extends Component {
         } else if (mode === Task.MODES.EDIT_SUB_TASK) {
             sub_task_dialog = (
                 <EditDialog
-                    onClose={this.onSubTaskClose}
                     onSubmit={this.onSubTaskSave} />
             );
         }

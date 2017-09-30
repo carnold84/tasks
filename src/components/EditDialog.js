@@ -37,6 +37,7 @@ class EditDialog extends Component {
 
     static propTypes = {
         onSubmit: func.isRequired,
+        onClose: func,
         defaultValue: string,
     };
 
