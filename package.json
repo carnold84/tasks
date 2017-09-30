@@ -10,7 +10,7 @@
     "prop-types": "^15.5.10",
     "react-click-outside": "tj/react-click-outside",
     "react-redux": "^5.0.5",
-    "react-scripts": "1.0.10",
+    "react-scripts": "1.0.14",
     "redux": "^3.7.2",
     "redux-thunk": "^2.2.0",
     "source-map-explorer": "^1.4.0",
