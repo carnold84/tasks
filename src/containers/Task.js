@@ -69,7 +69,7 @@ class Task extends Component {
         onClose: func.isRequired,
     };
 
-    defaultProps = {
+    static defaultProps = {
         show: false,
         task: undefined,
     };

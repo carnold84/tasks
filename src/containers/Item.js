@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
-import { ListItem, ListItemSecondaryAction, ListItemText } from 'material-ui/List';
+import { ListItem } from 'material-ui/List';
 import IconButton from 'material-ui/IconButton';
 import Checkbox from 'material-ui/Checkbox';
 import DeleteIcon from 'material-ui-icons/Delete';
@@ -18,10 +18,42 @@ const Container = styled.div`
 `;
 
 const ListItemPrimaryAction = styled.div`
+    overflow: hidden;
     flex-grow: 1;
+    flex-direction: column;
+    justify-content: center;
     align-self: stretch;
+    align-items: flex-start;
+    display: flex;
+`;
+
+const ListItemPrimaryText = styled.h3`
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+`;
+
+const ListItemSecondaryText = styled.p`
+    width: 100%;
+    color: #999999;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+`;
+
+const ListItemSecondaryAction = styled.div`
+    justify-content: center;
     align-items: center;
     display: flex;
+`;
+
+const StyledIconButton = styled(IconButton)`
+    color: rgba(0, 0, 0, 0.4);
+
+    &:hover {
+        color: rgba(0, 0, 0, 0.8);
+    }
 `;
 
 const { object, func } = PropTypes;
@@ -78,15 +110,13 @@ class Item extends Component {
                     />
                     <ListItemPrimaryAction
                         onClick={this.onClick}>
-                        <ListItemText
-                            primary={data.text}
-                            secondary={data.subText}
-                        />
+                        <ListItemPrimaryText>{data.text}</ListItemPrimaryText>
+                        <ListItemSecondaryText>{data.subText}</ListItemSecondaryText>
                     </ListItemPrimaryAction>
                     <ListItemSecondaryAction>
-                        <IconButton aria-label="Delete" onClick={this.onDelete}>
+                        <StyledIconButton aria-label="Delete" onClick={this.onDelete}>
                             <DeleteIcon />
-                        </IconButton>
+                        </StyledIconButton>
                     </ListItemSecondaryAction>
                 </ListItem>
             </Container>
