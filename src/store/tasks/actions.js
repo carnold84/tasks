@@ -9,12 +9,6 @@ if (process.env.NODE_ENV === 'development') {
 
 const TASKS_ENDPOINT = `${ENDPOINT}/tasks`;
 
-const requestTasks = () => {
-    return {
-        type: types.REQUEST_TASKS,
-    }
-};
-
 const receiveTasks = (tasks) => {
     return {
         type: types.RECEIVE_TASKS,
@@ -25,7 +19,6 @@ const receiveTasks = (tasks) => {
 
 const fetchTasks = () => {
     return dispatch => {
-        dispatch(requestTasks());
 
         return fetch(TASKS_ENDPOINT)
             .then(response => response.json())
@@ -42,7 +35,6 @@ const receiveTask = (task) => {
 
 const fetchTask = (id) => {
     return dispatch => {
-        dispatch(requestTasks());
 
         return fetch(`${TASKS_ENDPOINT}/${id}`)
             .then(response => response.json())
