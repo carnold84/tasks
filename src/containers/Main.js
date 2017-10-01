@@ -111,6 +111,18 @@ class Main extends Component {
         });
     };
 
+    componentWillReceiveProps(nextProps) {
+        const { currentScreen, selectedTaskId } = this.state;
+        
+        if (currentScreen === SCREENS.TASK && selectedTaskId === undefined) {
+            const selectedTask = nextProps.tasks[nextProps.tasks.length - 1];
+            this.setState({
+                selectedTaskId: selectedTask.id,
+            });
+        }
+    }
+    
+
     render() {
         const { tasks, tasksById } = this.props;
         const { currentScreen, selectedTaskId } = this.state;

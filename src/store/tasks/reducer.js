@@ -2,7 +2,6 @@ import _cloneDeep from 'lodash/cloneDeep';
 import * as types from './actionTypes';
 
 const initialState = {
-    isFetching: false,
     tasks: undefined,
     tasksById: undefined,
     subTasksByParentId: undefined,
@@ -13,22 +12,16 @@ const reduce = (state = initialState, action = {}) => {
     let tasks = undefined;
     let tasksById = undefined;
     let subTasksByParentId = undefined;
-    let isFetching = undefined;
     
     switch (action.type) {
             
         case types.REQUEST_TASKS:
 
-            isFetching = true;
-
             return {
                 ...state,
-                isFetching,
             };
             
         case types.RECEIVE_TASKS:
-
-            isFetching = false;
 
             tasks = [];
             tasksById = {};
@@ -67,15 +60,12 @@ const reduce = (state = initialState, action = {}) => {
             });
 
             return {
-                isFetching,
                 tasks,
                 tasksById,
                 subTasksByParentId,
             };
             
         case types.RECEIVE_TASK:
-
-            isFetching = false;
 
             // create new arrays
             tasks = _cloneDeep(state.tasks);
@@ -153,7 +143,6 @@ const reduce = (state = initialState, action = {}) => {
             tasksById[received_task.id] = received_task;
 
             return {
-                isFetching,
                 tasks,
                 tasksById,
                 subTasksByParentId,
