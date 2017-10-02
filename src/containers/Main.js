@@ -153,6 +153,7 @@ class Main extends Component {
                                     <Item
                                         key={task.id}
                                         data={task}
+                                        linkify={false}
                                         onClick={this.onTaskClick}
                                         onDelete={this.onTaskDelete}
                                         onCompleted={this.onTaskCompleted} />

@@ -146,16 +146,16 @@ class Task extends Component {
 
     onEditClick = () => {
         let mode = Task.MODES.EDIT_TASK;
-        this.setState({mode});
-        window.history.pushState({mode}, mode);
+        this.setState({ mode });
+        window.history.pushState({ mode }, mode);
     };
 
     onAddSubTaskClick = () => {
         let mode = Task.MODES.EDIT_SUB_TASK;
-        this.setState({mode});
-        window.history.pushState({mode}, mode);
+        this.setState({ mode });
+        window.history.pushState({ mode }, mode);
     };
-    
+
     onBack = () => {
         if (this.state.mode === Task.MODES.EDIT_TASK) {
             this.setState({
@@ -173,7 +173,7 @@ class Task extends Component {
     componentWillReceiveProps(nextProps) {
         const { show } = this.props;
         const { task } = nextProps;
-        
+
         // only update if changed
         if (nextProps.show !== show) {
 
@@ -183,7 +183,7 @@ class Task extends Component {
                 const mode = task ? undefined : Task.MODES.EDIT_TASK;
 
                 if (mode === Task.MODES.EDIT_TASK) {
-                    window.history.pushState({mode}, mode);
+                    window.history.pushState({ mode }, mode);
                 }
                 window.addEventListener('popstate', this.onBack);
 
@@ -226,7 +226,9 @@ class Task extends Component {
                 return (
                     <Item
                         key={childTask.id}
-                        data={childTask} />
+                        data={childTask}
+                        linkify={true}
+                    />
                 );
             });
         }
