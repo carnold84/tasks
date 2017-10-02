@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
+import Linkify from 'linkifyjs/react';
 import { ListItem } from 'material-ui/List';
 import IconButton from 'material-ui/IconButton';
 import Checkbox from 'material-ui/Checkbox';
@@ -32,6 +33,11 @@ const ListItemPrimaryText = styled.h3`
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    word-wrap: break-word;
+    
+    a, a:link, a:visited {
+        color: rgba(0, 0, 0, 0.8);
+    }
 `;
 
 const ListItemSecondaryText = styled.p`
@@ -40,6 +46,11 @@ const ListItemSecondaryText = styled.p`
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    word-wrap: break-word;
+    
+    a, a:link, a:visited {
+        color: rgba(0, 0, 0, 0.4);
+    }
 `;
 
 const ListItemSecondaryAction = styled.div`
@@ -49,14 +60,18 @@ const ListItemSecondaryAction = styled.div`
 `;
 
 const StyledIconButton = styled(IconButton)`
-    color: rgba(0, 0, 0, 0.4);
+    color: rgba(0, 0, 0, 0.3);
 
     &:hover {
         color: rgba(0, 0, 0, 0.8);
     }
 `;
 
-const { object, func } = PropTypes;
+const StyledLinkify = styled(Linkify)`
+    width: 100%;
+`;
+
+const { object, func, bool } = PropTypes;
 
 class Item extends Component {
 
@@ -65,6 +80,11 @@ class Item extends Component {
         onClick: func,
         onCompleted: func,
         onDelete: func,
+        linkify: bool,
+    };
+    
+    static defaultProps = {
+        linkify: false,
     };
 
     onDelete = () => {
@@ -95,7 +115,24 @@ class Item extends Component {
     }
 
     render() {
-        const { data } = this.props;
+        const { data, linkify } = this.props;
+
+        let content = [
+            <ListItemPrimaryText key={'primary'}>{data.text}</ListItemPrimaryText>,
+            <ListItemSecondaryText key={'secondary'}>{data.subText}</ListItemSecondaryText>
+        ];
+
+        if (linkify) {
+            content = (
+                <StyledLinkify options={{
+                    attributes: {
+                        rel: 'nofollow'
+                    }
+                }}>
+                    {content}
+                </StyledLinkify>
+            );
+        }
 
         return (
             <Container>
@@ -110,8 +147,7 @@ class Item extends Component {
                     />
                     <ListItemPrimaryAction
                         onClick={this.onClick}>
-                        <ListItemPrimaryText>{data.text}</ListItemPrimaryText>
-                        <ListItemSecondaryText>{data.subText}</ListItemSecondaryText>
+                        {content}
                     </ListItemPrimaryAction>
                     <ListItemSecondaryAction>
                         <StyledIconButton aria-label="Delete" onClick={this.onDelete}>

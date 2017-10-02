@@ -4,6 +4,7 @@
   "private": true,
   "homepage": "https://meltplastic.net/tasks_app",
   "devDependencies": {
+    "linkifyjs": "^2.1.5",
     "lodash": "^4.17.4",
     "material-ui": "next",
     "material-ui-icons": "^1.0.0-alpha.19",
