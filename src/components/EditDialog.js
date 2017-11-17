@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 import Paper from 'material-ui/Paper';
 
 import EditTextInput from './EditTextInput';
@@ -25,25 +26,15 @@ const Dialog = styled.div`
 
 const Overlay = styled.div`
     position: absolute;
-    background-color: rgba(0, 0, 0, 0.5);
     width: 100%;
     height: 100%;
+    top: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.5);
     z-index: 1;
 `;
 
-const { func, string } = PropTypes;
-
 class EditDialog extends Component {
-
-    static propTypes = {
-        onSubmit: func.isRequired,
-        onClose: func,
-        defaultValue: string,
-    };
-
-    static defaultProps = {
-        defaultValue: '',
-    };
 
     state = {
         text: '',
@@ -60,8 +51,18 @@ class EditDialog extends Component {
     }
 
     render() {
-        const { onClose, onSubmit } = this.props;
+        const { closeUrl, onSubmit } = this.props;
         const { text } = this.state;
+
+        let overlay = <Overlay />;
+
+        if (closeUrl) {
+            overlay = (
+                <Link to={closeUrl}>
+                    <Overlay />
+                </Link>
+            );
+        }
 
         return (
             <Container>
@@ -73,11 +74,22 @@ class EditDialog extends Component {
                         />
                     </Paper>
                 </Dialog>
-                <Overlay
-                    onClick={onClose} />
+                {overlay}
             </Container>
         );
     }
+};
+
+const { func, string } = PropTypes;
+
+EditDialog.propTypes = {
+    onSubmit: func.isRequired,
+    closeUrl: string,
+    defaultValue: string,
+};
+
+EditDialog.defaultProps = {
+    defaultValue: '',
 };
 
 export default EditDialog;
