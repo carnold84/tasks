@@ -70,7 +70,6 @@ const AppBarTitle = styled.h2`
 `;
 
 class Task extends Component {
-
     onTaskSave = text => {
         const { match, history, tasksById, dispatch } = this.props;
         const id = match.params.id;
@@ -79,11 +78,16 @@ class Task extends Component {
             const task = tasksById[id];
             task.text = text;
             dispatch(updateTask(task));
+            history.goBack();
         } else {
             dispatch(createTask(text));
+            history.go(2);
         }
+    };
 
-        history.push(`/task/${match.params.id}`);
+    onCancel = text => {
+        const { history } = this.props;
+        history.goBack();
     };
 
     onSubTaskSave = text => {
@@ -100,8 +104,13 @@ class Task extends Component {
             dispatch(updateTask(sub_task));
         }
 
-        history.push(`/task/${match.params.id}`);
+        history.push(`/task/${id}`);
     };
+
+    componentWillReceiveProps(nextProps) {
+        console.log(nextProps)
+    }
+    
 
     render() {
         const { match, tasksById } = this.props;
@@ -114,13 +123,13 @@ class Task extends Component {
 
         const id = match.params.id;
         const action = match.params.action;
-        
+
         if (id) {
             if (tasksById) {
                 task = tasksById[id];
-                
+
                 title = task ? task.text : 'Loading';
-                
+
                 task_input = (
                     <TitleInput>
                         <AppBarTitle>{title}</AppBarTitle>
@@ -131,7 +140,7 @@ class Task extends Component {
                         </Link>
                     </TitleInput>
                 );
-                
+
                 if (task && task.children) {
                     content = (
                         <List disablePadding>
@@ -141,9 +150,9 @@ class Task extends Component {
                         </List>
                     );
                 }
-                
+
                 if (action === 'new') {
-                    sub_task_dialog = <EditDialog onSubmit={this.onSubTaskSave} onCloseUrl={`/task/${id}`} />;
+                    sub_task_dialog = <EditDialog onSubmit={this.onSubTaskSave} onCancel={this.onCancel} />;
                 } else if (action === 'edit') {
                     task_input = (
                         <TitleInput>
@@ -151,6 +160,7 @@ class Task extends Component {
                                 color={'#ffffff'}
                                 defaultValue={task ? task.text : undefined}
                                 onSubmit={this.onTaskSave}
+                                onCancel={this.onCancel}
                             />
                         </TitleInput>
                     );
@@ -165,11 +175,7 @@ class Task extends Component {
         } else {
             task_input = (
                 <TitleInput>
-                    <EditTextInput
-                        color={'#ffffff'}
-                        defaultValue={undefined}
-                        onSubmit={this.onTaskSave}
-                    />
+                    <EditTextInput color={'#ffffff'} defaultValue={undefined} onSubmit={this.onTaskSave} />
                 </TitleInput>
             );
         }
@@ -186,10 +192,8 @@ class Task extends Component {
                         {task_input}
                     </Toolbar>
                 </AppBar>
-                <Content>
-                    {content}
-                </Content>
-                {task &&
+                <Content>{content}</Content>
+                {task && (
                     <FabContainer>
                         <Link to={`/task/${id}/new`}>
                             <Button fab color="primary">
@@ -197,7 +201,7 @@ class Task extends Component {
                             </Button>
                         </Link>
                     </FabContainer>
-                }
+                )}
                 {sub_task_dialog}
             </Container>
         );

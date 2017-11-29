@@ -51,18 +51,8 @@ class EditDialog extends Component {
     }
 
     render() {
-        const { closeUrl, onSubmit } = this.props;
+        const { onSubmit, onCancel } = this.props;
         const { text } = this.state;
-
-        let overlay = <Overlay />;
-
-        if (closeUrl) {
-            overlay = (
-                <Link to={closeUrl}>
-                    <Overlay />
-                </Link>
-            );
-        }
 
         return (
             <Container>
@@ -74,7 +64,8 @@ class EditDialog extends Component {
                         />
                     </Paper>
                 </Dialog>
-                {overlay}
+                <Overlay
+                    onClick={onCancel} />
             </Container>
         );
     }
@@ -84,7 +75,7 @@ const { func, string } = PropTypes;
 
 EditDialog.propTypes = {
     onSubmit: func.isRequired,
-    closeUrl: string,
+    onCancel: func,
     defaultValue: string,
 };
 

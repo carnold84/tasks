@@ -78,7 +78,7 @@ class Main extends Component {
 
         let content = undefined;
 
-        if (_isEmpty(tasks)) {
+        if (tasks === undefined) {
             content = (
                 <ProgressContainer>
                     <CircularProgress />
