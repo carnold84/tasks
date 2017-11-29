@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import Linkify from 'linkifyjs/react';
 import { ListItem } from 'material-ui/List';
@@ -26,6 +27,11 @@ const ListItemPrimaryAction = styled.div`
     align-self: stretch;
     align-items: flex-start;
     display: flex;
+    
+    a, a:link, a:visited {
+        text-decoration: none;
+        color: rgba(0, 0, 0, 0.8);
+    }
 `;
 
 const ListItemPrimaryText = styled.h3`
@@ -75,18 +81,6 @@ const { object, func, bool } = PropTypes;
 
 class Item extends Component {
 
-    static propTypes = {
-        data: object.isRequired,
-        onClick: func,
-        onCompleted: func,
-        onDelete: func,
-        linkify: bool,
-    };
-    
-    static defaultProps = {
-        linkify: false,
-    };
-
     onDelete = () => {
         const { data } = this.props;
         
@@ -102,20 +96,12 @@ class Item extends Component {
         this.props.dispatch(updateTask(data));
     };
 
-    onClick = () => {
-        const { data, onClick } = this.props;
-
-        if (onClick) {
-            onClick(data);
-        }
-    };
-
     shouldComponentUpdate(nextProps) {
         return nextProps.data !== this.props.data;
     }
 
     render() {
-        const { data, linkify } = this.props;
+        const { data, link, linkify } = this.props;
 
         let content = [
             <ListItemPrimaryText key={'primary'}>{data.text}</ListItemPrimaryText>,
@@ -133,6 +119,14 @@ class Item extends Component {
                 </StyledLinkify>
             );
         }
+        
+        if (link) {
+            content = (
+                <Link to={link}>
+                    {content}
+                </Link>
+            );
+        }
 
         return (
             <Container>
@@ -145,8 +139,7 @@ class Item extends Component {
                         icon={<RadioButtonUncheckedIcon />}
                         checkedIcon={<CheckCircleIcon />}
                     />
-                    <ListItemPrimaryAction
-                        onClick={this.onClick}>
+                    <ListItemPrimaryAction>
                         {content}
                     </ListItemPrimaryAction>
                     <ListItemSecondaryAction>
@@ -159,5 +152,16 @@ class Item extends Component {
         );
     }
 }
+
+Item.propTypes = {
+    data: object.isRequired,
+    onCompleted: func,
+    onDelete: func,
+    linkify: bool,
+};
+
+Item.defaultProps = {
+    linkify: false,
+};
 
 export default connect()(Item);

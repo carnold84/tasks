@@ -20,33 +20,18 @@ const Container = styled.div`
     }
 `;
 
-const { func, string } = PropTypes;
-
 class EditTextInput extends Component {
-
-    static propTypes = {
-        onSubmit: func.isRequired,
-        onCancel: func,
-        defaultValue: string,
-        color: string,
-    };
-
-    static defaultProps = {
-        defaultValue: '',
-        color: 'rgba(0, 0, 0, 0.8)',
-    };
-
     state = {
         text: '',
     };
 
-    onChange = (event) => {
+    onChange = event => {
         const text = event.target.value;
-        
-        this.setState({text});
+
+        this.setState({ text });
     };
 
-    onKeyDown = (event) => {
+    onKeyDown = event => {
         if (event.keyCode) {
             // RETURN
             if (event.keyCode === 13) {
@@ -55,7 +40,7 @@ class EditTextInput extends Component {
         }
     };
 
-    onSaveClick = (event) => {
+    onSaveClick = event => {
         this.onSubmit();
     };
 
@@ -89,26 +74,23 @@ class EditTextInput extends Component {
                 <Input
                     id="input"
                     type="text"
-                    inputRef={el => this.input = el}
+                    inputRef={el => (this.input = el)}
                     value={text}
                     placeholder={'Task...'}
                     onChange={this.onChange}
                     onKeyDown={this.onKeyDown}
-                    style={{width: '100%', fontSize: '16px', fontWeight: '400', lineHeight: '24px'}}
+                    style={{ width: '100%', fontSize: '16px', fontWeight: '400', lineHeight: '24px' }}
                     disableUnderline={true}
                 />
-                <IconButton
-                    aria-label="Save"
-                    onClick={this.onSaveClick}>
-                    <CheckIcon
-                        color={color} />
+                <IconButton aria-label="Save" onClick={this.onSaveClick}>
+                    <CheckIcon color={color} />
                 </IconButton>
             </Container>
         );
 
         if (onCancel) {
             return (
-                <ClickOutside style={{flexGrow: 1}} onClickOutside={onCancel}>
+                <ClickOutside style={{ flexGrow: 1 }} onClickOutside={onCancel}>
                     {content}
                 </ClickOutside>
             );
@@ -116,6 +98,20 @@ class EditTextInput extends Component {
             return content;
         }
     }
+}
+
+const { func, string } = PropTypes;
+
+EditTextInput.propTypes = {
+    onSubmit: func.isRequired,
+    onCancel: func,
+    defaultValue: string,
+    color: string,
+};
+
+EditTextInput.defaultProps = {
+    defaultValue: '',
+    color: 'rgba(0, 0, 0, 0.8)',
 };
 
 export default EditTextInput;

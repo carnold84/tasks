@@ -2,7 +2,9 @@ import React, { Component } from 'react';
 import { createStore, applyMiddleware, combineReducers, compose } from 'redux';
 import { Provider } from 'react-redux';
 import thunkMiddleware from 'redux-thunk';
-import { MuiThemeProvider, createMuiTheme, createPalette, createTypography  } from 'material-ui/styles';
+import { MuiThemeProvider, createMuiTheme, createPalette, createTypography } from 'material-ui/styles';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
+
 import palette from './theme';
 
 import config from './config';
@@ -11,18 +13,15 @@ import { fetchTasks } from './store/tasks/actions';
 
 import { AppContainer } from './styles';
 
-import Main from './containers/Main';
+import Main from './pages/Main';
+import Task from './pages/Task';
 
 const store = createStore(
     combineReducers(reducers),
-    compose(
-        applyMiddleware(thunkMiddleware), 
-        window.devToolsExtension ? window.devToolsExtension() : f => f,
-    ),
+    compose(applyMiddleware(thunkMiddleware), window.devToolsExtension ? window.devToolsExtension() : f => f)
 );
 
-store
-  .dispatch(fetchTasks());
+store.dispatch(fetchTasks());
 
 const mainPalette = createPalette({
     primary: palette,
@@ -39,17 +38,23 @@ const theme = createMuiTheme({
 });
 
 class App extends Component {
-    
     componentDidMount() {
         document.querySelector('title').textContent = config.appName;
     }
-    
+
     render() {
         return (
             <Provider store={store}>
                 <MuiThemeProvider theme={theme}>
                     <AppContainer>
-                        <Main />
+                        <Router>
+                            <div>
+                                <Route exact path="/" component={Main}/>
+                                <Route exact path="/task" component={Task}/>
+                                <Route exact path="/task/:id" component={Task}/>
+                                <Route exact path="/task/:id/:action" component={Task}/>
+                            </div>
+                        </Router>
                     </AppContainer>
                 </MuiThemeProvider>
             </Provider>

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import _isEmpty from 'lodash/isEmpty';
 import { withStyles, createStyleSheet } from 'material-ui/styles';
@@ -14,8 +15,7 @@ import { CircularProgress } from 'material-ui/Progress';
 import config from '../config';
 import { FabContainer } from '../styles';
 
-import Task from './Task';
-import Item from './Item';
+import Item from '../containers/Item';
 
 import EmptyMessage from '../components/EmptyMessage';
 
@@ -65,10 +65,6 @@ const ProgressContainer = styled.div`
     z-index: 2;
 `;
 
-const SCREENS = {
-    TASK: 'screen/task',
-};
-
 const styleSheet = createStyleSheet('Main', {
     appBar: {
         fontFamily: 'inherit',
@@ -77,59 +73,12 @@ const styleSheet = createStyleSheet('Main', {
 
 class Main extends Component {
 
-    state = {
-        currentScreen: undefined,
-        selectedTaskId: undefined,
-    };
-
-    onAddTaskClick = () => {
-
-        this.openTask();
-    };
-
-    onTaskClick = (task) => {
-
-        this.openTask(task.id);
-    };
-
-    openTask = (selectedTaskId) => {
-
-        // hide the task screen
-        this.setState({
-            currentScreen: SCREENS.TASK,
-            selectedTaskId,
-        });
-        window.history.pushState({ screen: SCREENS.TASK }, SCREENS.TASK);
-    };
-
-    onTaskClose = () => {
-
-        // hide the task screen
-        this.setState({
-            currentScreen: undefined,
-            selectedTaskId: undefined,
-        });
-    };
-
-    componentWillReceiveProps(nextProps) {
-        const { currentScreen, selectedTaskId } = this.state;
-        
-        if (currentScreen === SCREENS.TASK && selectedTaskId === undefined) {
-            const selectedTask = nextProps.tasks[nextProps.tasks.length - 1];
-            this.setState({
-                selectedTaskId: selectedTask.id,
-            });
-        }
-    }
-    
-
     render() {
-        const { tasks, tasksById } = this.props;
-        const { currentScreen, selectedTaskId } = this.state;
+        const { tasks } = this.props;
 
         let content = undefined;
 
-        if (_isEmpty(tasks)) {
+        if (tasks === undefined) {
             content = (
                 <ProgressContainer>
                     <CircularProgress />
@@ -154,9 +103,7 @@ class Main extends Component {
                                         key={task.id}
                                         data={task}
                                         linkify={false}
-                                        onClick={this.onTaskClick}
-                                        onDelete={this.onTaskDelete}
-                                        onCompleted={this.onTaskCompleted} />
+                                        link={`/task/${task.id}`} />
                                 );
                             })
                         }
@@ -167,16 +114,14 @@ class Main extends Component {
                     <EmptyMessage
                         title={'You Have No Tasks.'}
                         text={'Feel Free To Add One.'}
-                        action={{
+                        link={{
                             title: 'Add Task',
-                            onClick: this.onAddTaskClick,
+                            path: '/task',
                         }}
                     />
                 );
             }
         }
-
-        const selectedTask = selectedTaskId ? tasksById[selectedTaskId] : undefined;
 
         return (
             <Container>
@@ -190,19 +135,16 @@ class Main extends Component {
                         {content}
                     </Content>
                     <FabContainer>
-                        <Button
-                            fab
-                            color="primary"
-                            focusable={false}
-                            onClick={this.onAddTaskClick}>
-                            <AddIcon />
-                        </Button>
+                        <Link to={'/task'}>
+                            <Button
+                                fab
+                                color="primary"
+                                focusable={false}>
+                                <AddIcon />
+                            </Button>
+                        </Link>
                     </FabContainer>
                 </MainContainer>
-                <Task
-                    show={currentScreen === SCREENS.TASK}
-                    task={selectedTask}
-                    onClose={this.onTaskClose} />
             </Container>
         );
     }

@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import Paper from 'material-ui/Paper';
 import Typography from 'material-ui/Typography';
@@ -21,7 +22,7 @@ const Container = styled.div`
 `;
 
 const EmptyMessage = (props) => {
-    const { title, text, action } = props;
+    const { title, text, link } = props;
 
     let textContent = undefined;
 
@@ -39,14 +40,15 @@ const EmptyMessage = (props) => {
 
     let button = undefined;
 
-    if (action) {
+    if (link) {
         button = (
-            <Button
-                raised
-                color="primary"
-                onClick={action.onClick}>
-                {action.title}
-            </Button>
+            <Link to={link.path}>
+                <Button
+                    raised
+                    color="primary">
+                    {link.title}
+                </Button>
+            </Link>
         );
     } 
 

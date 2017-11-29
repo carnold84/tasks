@@ -56,8 +56,8 @@ const createTask = (text, parentId) => {
 
         return fetch(TASKS_ENDPOINT, params)
             .then(response => response.json())
-            .then(() => {
-                dispatch(fetchTasks());
+            .then((response) => {
+                dispatch(receiveTask(response.task));
             });
     };
 }
@@ -77,9 +77,10 @@ const updateTask = (task) => {
         };
 
         return fetch(url, params)
-            .then(response => console.log(response))
-            .then(() => {
-                dispatch(fetchTask(task.id));
+            .then(response => response.json())
+            .then((response) => {
+                console.log('response', response.task)
+                dispatch(receiveTask(response.task));
             });
     };
 }
