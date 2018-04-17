@@ -108,9 +108,8 @@ class Task extends Component {
     };
 
     componentWillReceiveProps(nextProps) {
-        console.log(nextProps)
+        console.log(nextProps);
     }
-    
 
     render() {
         const { match, tasksById } = this.props;
@@ -145,7 +144,9 @@ class Task extends Component {
                     content = (
                         <List disablePadding>
                             {task.children.map(childTask => {
-                                return <Item key={childTask.id} data={childTask} linkify={true} />;
+                                return (
+                                    <Item key={childTask.id} data={childTask} linkify={true} />
+                                );
                             })}
                         </List>
                     );

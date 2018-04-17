@@ -4,11 +4,7 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import _isEmpty from 'lodash/isEmpty';
 import { withStyles, createStyleSheet } from 'material-ui/styles';
-import AppBar from 'material-ui/AppBar';
-import Toolbar from 'material-ui/Toolbar';
-import Typography from 'material-ui/Typography';
 import Button from 'material-ui/Button';
-import List from 'material-ui/List';
 import AddIcon from 'material-ui-icons/Add';
 import { CircularProgress } from 'material-ui/Progress';
 
@@ -17,6 +13,9 @@ import { FabContainer } from '../styles';
 
 import Item from '../containers/Item';
 
+import ActionBar from '../components/ActionBar';
+import Header from '../components/Header';
+import List from '../components/List';
 import EmptyMessage from '../components/EmptyMessage';
 
 const Container = styled.div`
@@ -87,7 +86,7 @@ class Main extends Component {
         } else {
             if (tasks.length > 0) {
                 content = (
-                    <List disablePadding>
+                    <List>
                         {
                             tasks.map((task) => {
 
@@ -126,11 +125,7 @@ class Main extends Component {
         return (
             <Container>
                 <MainContainer>
-                    <AppBar position="static">
-                        <Toolbar>
-                            <Typography type="subheading" color="inherit">{config.appName}</Typography>
-                        </Toolbar>
-                    </AppBar>
+                    <ActionBar elementsLeft={<Header>Structure</Header>} />
                     <Content>
                         {content}
                     </Content>

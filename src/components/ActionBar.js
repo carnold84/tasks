@@ -7,7 +7,8 @@ const Container = styled.div`
     height: 50px;
     min-height: 50px;
     margin: 0;
-    padding: 0;
+    padding: 0 15px;
+    background-color: #63096B;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.25);
     flex-direction: row;
     justify-content: space-between;
@@ -15,11 +16,9 @@ const Container = styled.div`
     display: flex;
 `;
 
-const Title = styled.h1`
+const ElementsLeft = styled.div`
     height: 100%;
-    font-size: 16px;
-    color: #ffffff;
-    margin: 0 15px;
+    justify-content: flex-start;
     align-items: center;
     display: flex;
 `;
@@ -31,24 +30,22 @@ const ElementsRight = styled.div`
     display: flex;
 `;
 
-const AppBar = (props) => {
+const ActionBar = props => {
+    const { elementsLeft, elementsRight } = props;
+
     return (
         <Container>
-            <Title>{props.textLeft}</Title>
-            <ElementsRight>{props.elementsRight}</ElementsRight>
+            <ElementsLeft>{elementsLeft}</ElementsLeft>
+            <ElementsRight>{elementsRight}</ElementsRight>
         </Container>
     );
 };
 
-const { string, array } = PropTypes;
+const { oneOfType, array, element } = PropTypes;
 
-AppBar.propTypes = {
-    textLeft: string,
-    elementsRight: array,
+ActionBar.propTypes = {
+    elementsLeft: oneOfType([array, element]),
+    elementsRight: oneOfType([array, element]),
 };
 
-AppBar.defaultProps = {
-    textLeft: '',
-};
-
-export default AppBar;
+export default ActionBar;
