@@ -1,32 +1,32 @@
 {
-  "name": "tasks-app",
-  "version": "0.1.0",
-  "private": true,
-  "homepage": "https://meltplastic.net/tasks_app",
-  "devDependencies": {
-    "@material-ui/core": "^1.2.0",
-    "@material-ui/icons": "^1.1.0",
-    "linkifyjs": "^2.1.5",
-    "lodash": "^4.17.4",
-    "prop-types": "^15.5.10",
-    "react-click-outside": "tj/react-click-outside",
-    "react-redux": "^5.0.5",
-    "react-router-dom": "^4.2.2",
-    "react-scripts": "1.0.14",
-    "redux": "^3.7.2",
-    "redux-thunk": "^2.2.0",
-    "source-map-explorer": "^1.4.0",
-    "styled-components": "^2.1.2"
-  },
-  "dependencies": {
-    "react": "^16.0.0",
-    "react-dom": "^16.0.0"
-  },
-  "scripts": {
-    "analyze": "source-map-explorer build/static/js/main.*",
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
-  }
+    "name": "tasks-app",
+    "version": "0.1.0",
+    "private": true,
+    "homepage": "https://meltplastic.net/tasks_app",
+    "devDependencies": {
+        "@material-ui/core": "^1.2.0",
+        "@material-ui/icons": "^1.1.0",
+        "linkifyjs": "^2.1.5",
+        "lodash": "^4.17.4",
+        "prop-types": "^15.5.10",
+        "react-click-outside": "tj/react-click-outside",
+        "react-redux": "^5.0.5",
+        "react-router-dom": "^4.2.2",
+        "react-scripts": "1.1.4",
+        "redux": "^4.0.0",
+        "redux-thunk": "^2.2.0",
+        "source-map-explorer": "^1.4.0",
+        "styled-components": "^2.1.2"
+    },
+    "dependencies": {
+        "react": "^16.4.0",
+        "react-dom": "^16.4.0"
+    },
+    "scripts": {
+        "analyze": "source-map-explorer build/static/js/main.*",
+        "start": "react-scripts start",
+        "build": "react-scripts build",
+        "test": "react-scripts test --env=jsdom",
+        "eject": "react-scripts eject"
+    }
 }
