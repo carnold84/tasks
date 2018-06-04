@@ -9,7 +9,7 @@ if (process.env.NODE_ENV === 'development') {
 
 const TASKS_ENDPOINT = `${ENDPOINT}/tasks`;
 
-const receiveTasks = (tasks) => {
+const receiveTasks = tasks => {
     return {
         type: types.RECEIVE_TASKS,
         tasks: tasks,
@@ -19,82 +19,77 @@ const receiveTasks = (tasks) => {
 
 const fetchTasks = () => {
     return dispatch => {
-
         return fetch(TASKS_ENDPOINT)
             .then(response => response.json())
             .then(json => dispatch(receiveTasks(json)));
     };
-}
+};
 
-const receiveTask = (task) => {
+const receiveTask = task => {
     return {
         type: types.RECEIVE_TASK,
         task: task,
     };
 };
 
-const fetchTask = (id) => {
+const fetchTask = id => {
     return dispatch => {
-
         return fetch(`${TASKS_ENDPOINT}/${id}`)
             .then(response => response.json())
             .then(json => dispatch(receiveTask(json)));
-    }
-}
+    };
+};
 
 const createTask = (text, parentId) => {
     return dispatch => {
-
         const params = {
             method: 'POST',
             mode: 'cors',
             headers: {
-                "Content-Type": "application/json",
+                'Content-Type': 'application/json',
             },
             body: JSON.stringify({text, parentId}),
         };
 
         return fetch(TASKS_ENDPOINT, params)
             .then(response => response.json())
-            .then((response) => {
+            .then(response => {
                 dispatch(receiveTask(response.task));
             });
     };
-}
+};
 
-const updateTask = (task) => {
+const updateTask = task => {
     return dispatch => {
-
         const url = `${TASKS_ENDPOINT}/${task.id}`;
 
         const params = {
             method: 'PUT',
             mode: 'cors',
             headers: {
-                "Content-Type": "application/json",
+                'Content-Type': 'application/json',
             },
             body: JSON.stringify(task),
         };
 
         return fetch(url, params)
             .then(response => response.json())
-            .then((response) => {
-                console.log('response', response.task)
+            .then(response => {
+                console.log('response', response.task);
                 dispatch(receiveTask(response.task));
             });
     };
-}
+};
 
-const deleteTask = (id) => {
+const deleteTask = id => {
     return dispatch => {
-
         const url = `${TASKS_ENDPOINT}/${id}`;
 
         const params = {
             method: 'DELETE',
             mode: 'cors',
             headers: {
-                "Content-Type": "application/json",
+                'Content-Type': 'application/json',
             },
         };
 
@@ -104,6 +99,6 @@ const deleteTask = (id) => {
                 dispatch(fetchTasks());
             });
     };
-}
+};
 
-export { fetchTasks, createTask, updateTask, deleteTask };
+export {fetchTasks, createTask, updateTask, deleteTask};

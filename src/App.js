@@ -1,17 +1,17 @@
-import React, { Component } from 'react';
-import { createStore, applyMiddleware, combineReducers, compose } from 'redux';
-import { Provider } from 'react-redux';
+import React, {Component} from 'react';
+import {createStore, applyMiddleware, combineReducers, compose} from 'redux';
+import {Provider} from 'react-redux';
 import thunkMiddleware from 'redux-thunk';
-import { MuiThemeProvider, createMuiTheme, createPalette, createTypography } from 'material-ui/styles';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import {MuiThemeProvider, createMuiTheme, createTypography} from '@material-ui/core/styles';
+import {BrowserRouter as Router, Route} from 'react-router-dom';
 
 import palette from './theme';
 
 import config from './config';
 import * as reducers from './store/reducers';
-import { fetchTasks } from './store/tasks/actions';
+import {fetchTasks} from './store/tasks/actions';
 
-import { AppContainer } from './styles';
+import {AppContainer} from './styles';
 
 import Main from './pages/Main';
 import Task from './pages/Task';
@@ -23,18 +23,11 @@ const store = createStore(
 
 store.dispatch(fetchTasks());
 
-const mainPalette = createPalette({
-    primary: palette,
-});
-
-const typography = createTypography(mainPalette, {
-    fontFamily: 'inherit',
-});
-
 const theme = createMuiTheme({
-    palette: mainPalette,
-    typography: typography,
-    fontFamily: 'Roboto Condensed',
+    primary: palette,
+    typography: {
+        fontFamily: 'Roboto Condensed',
+    },
 });
 
 class App extends Component {
@@ -49,10 +42,10 @@ class App extends Component {
                     <AppContainer>
                         <Router>
                             <div>
-                                <Route exact path="/" component={Main}/>
-                                <Route exact path="/task" component={Task}/>
-                                <Route exact path="/task/:id" component={Task}/>
-                                <Route exact path="/task/:id/:action" component={Task}/>
+                                <Route exact path="/" component={Main} />
+                                <Route exact path="/task" component={Task} />
+                                <Route exact path="/task/:id" component={Task} />
+                                <Route exact path="/task/:id/:action" component={Task} />
                             </div>
                         </Router>
                     </AppContainer>

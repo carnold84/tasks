@@ -1,8 +1,10 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
-import Paper from 'material-ui/Paper';
+import {Link} from 'react-router-dom';
+
+// material ui
+import Paper from '@material-ui/core/Paper';
 
 import EditTextInput from './EditTextInput';
 
@@ -35,13 +37,12 @@ const Overlay = styled.div`
 `;
 
 class EditDialog extends Component {
-
     state = {
         text: '',
     };
 
     componentWillMount() {
-        const { defaultValue } = this.props;
+        const {defaultValue} = this.props;
 
         if (defaultValue) {
             this.setState({
@@ -51,27 +52,23 @@ class EditDialog extends Component {
     }
 
     render() {
-        const { onSubmit, onCancel } = this.props;
-        const { text } = this.state;
+        const {onSubmit, onCancel} = this.props;
+        const {text} = this.state;
 
         return (
             <Container>
                 <Dialog>
                     <Paper elevation={2} square style={{width: '100%', padding: '10px 10px 10px 20px'}}>
-                        <EditTextInput
-                            defaultValue={text ? text : undefined}
-                            onSubmit={(text) => onSubmit(text)}
-                        />
+                        <EditTextInput defaultValue={text ? text : undefined} onSubmit={text => onSubmit(text)} />
                     </Paper>
                 </Dialog>
-                <Overlay
-                    onClick={onCancel} />
+                <Overlay onClick={onCancel} />
             </Container>
         );
     }
-};
+}
 
-const { func, string } = PropTypes;
+const {func, string} = PropTypes;
 
 EditDialog.propTypes = {
     onSubmit: func.isRequired,

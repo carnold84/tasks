@@ -1,10 +1,12 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import ClickOutside from 'react-click-outside';
-import Input from 'material-ui/Input/Input';
-import IconButton from 'material-ui/IconButton';
-import CheckIcon from 'material-ui-icons/Check';
+
+// material ui
+import Input from '@material-ui/core/Input/Input';
+import IconButton from '@material-ui/core/IconButton';
+import CheckIcon from '@material-ui/icons/Check';
 
 const Container = styled.div`
     width: 100%;
@@ -28,7 +30,7 @@ class EditTextInput extends Component {
     onChange = event => {
         const text = event.target.value;
 
-        this.setState({ text });
+        this.setState({text});
     };
 
     onKeyDown = event => {
@@ -45,14 +47,14 @@ class EditTextInput extends Component {
     };
 
     onSubmit = () => {
-        const { onSubmit } = this.props;
+        const {onSubmit} = this.props;
         const text = this.state.text;
 
         onSubmit(text);
     };
 
     componentWillMount() {
-        const { defaultValue } = this.props;
+        const {defaultValue} = this.props;
 
         if (defaultValue) {
             this.setState({
@@ -66,8 +68,8 @@ class EditTextInput extends Component {
     }
 
     render() {
-        const { text } = this.state;
-        const { color, onCancel } = this.props;
+        const {text} = this.state;
+        const {color, onCancel} = this.props;
 
         const content = (
             <Container color={color}>
@@ -79,7 +81,7 @@ class EditTextInput extends Component {
                     placeholder={'Task...'}
                     onChange={this.onChange}
                     onKeyDown={this.onKeyDown}
-                    style={{ width: '100%', fontSize: '16px', fontWeight: '400', lineHeight: '24px' }}
+                    style={{width: '100%', fontSize: '16px', fontWeight: '400', lineHeight: '24px'}}
                     disableUnderline={true}
                 />
                 <IconButton aria-label="Save" onClick={this.onSaveClick}>
@@ -90,7 +92,7 @@ class EditTextInput extends Component {
 
         if (onCancel) {
             return (
-                <ClickOutside style={{ flexGrow: 1 }} onClickOutside={onCancel}>
+                <ClickOutside style={{flexGrow: 1}} onClickOutside={onCancel}>
                     {content}
                 </ClickOutside>
             );
@@ -100,7 +102,7 @@ class EditTextInput extends Component {
     }
 }
 
-const { func, string } = PropTypes;
+const {func, string} = PropTypes;
 
 EditTextInput.propTypes = {
     onSubmit: func.isRequired,

@@ -4,10 +4,10 @@
   "private": true,
   "homepage": "https://meltplastic.net/tasks_app",
   "devDependencies": {
+    "@material-ui/core": "^1.2.0",
+    "@material-ui/icons": "^1.1.0",
     "linkifyjs": "^2.1.5",
     "lodash": "^4.17.4",
-    "material-ui": "next",
-    "material-ui-icons": "^1.0.0-alpha.19",
     "prop-types": "^15.5.10",
     "react-click-outside": "tj/react-click-outside",
     "react-redux": "^5.0.5",

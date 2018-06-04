@@ -1,26 +1,30 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
+import {connect} from 'react-redux';
+import {Link} from 'react-router-dom';
 import styled from 'styled-components';
-import AppBar from 'material-ui/AppBar';
-import Toolbar from 'material-ui/Toolbar';
-import IconButton from 'material-ui/IconButton';
-import List from 'material-ui/List';
-import Button from 'material-ui/Button';
-import ArrowBackIcon from 'material-ui-icons/ArrowBack';
-import AddIcon from 'material-ui-icons/Add';
-import EditIcon from 'material-ui-icons/Edit';
-import { CircularProgress } from 'material-ui/Progress';
 
-import { createTask, updateTask } from '../store/tasks/actions';
+// material ui
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import IconButton from '@material-ui/core/IconButton';
+import List from '@material-ui/core/List';
+import Button from '@material-ui/core/Button';
+import CircularProgress from '@material-ui/core/CircularProgress';
+
+// material ui icons
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import AddIcon from '@material-ui/icons/Add';
+import EditIcon from '@material-ui/icons/Edit';
+
+import {createTask, updateTask} from '../store/tasks/actions';
 
 import Item from '../containers/Item';
 
 import EditTextInput from '../components/EditTextInput';
 import EditDialog from '../components/EditDialog';
 
-import { FabContainer } from '../styles';
+import {FabContainer} from '../styles';
 
 const Container = styled.div`
     position: absolute;
@@ -71,7 +75,7 @@ const AppBarTitle = styled.h2`
 
 class Task extends Component {
     onTaskSave = text => {
-        const { match, history, tasksById, dispatch } = this.props;
+        const {match, history, tasksById, dispatch} = this.props;
         const id = match.params.id;
 
         if (id) {
@@ -86,12 +90,12 @@ class Task extends Component {
     };
 
     onCancel = text => {
-        const { history } = this.props;
+        const {history} = this.props;
         history.goBack();
     };
 
     onSubTaskSave = text => {
-        const { match, history, tasksById, dispatch } = this.props;
+        const {match, history, tasksById, dispatch} = this.props;
         const id = match.params.id;
 
         if (id) {
@@ -108,12 +112,11 @@ class Task extends Component {
     };
 
     componentWillReceiveProps(nextProps) {
-        console.log(nextProps)
+        console.log(nextProps);
     }
-    
 
     render() {
-        const { match, tasksById } = this.props;
+        const {match, tasksById} = this.props;
 
         let content = undefined;
         let task = undefined;
@@ -208,7 +211,7 @@ class Task extends Component {
     }
 }
 
-const { object } = PropTypes;
+const {object} = PropTypes;
 
 Task.propTypes = {
     match: object,

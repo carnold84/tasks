@@ -1,10 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
+import {Link} from 'react-router-dom';
 import styled from 'styled-components';
-import Paper from 'material-ui/Paper';
-import Typography from 'material-ui/Typography';
-import Button from 'material-ui/Button';
+
+// material ui
+import Paper from '@material-ui/core/Paper';
+import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
 
 const styleSheet = {
     padding: '25px 30px',
@@ -21,18 +23,14 @@ const Container = styled.div`
     display: flex;
 `;
 
-const EmptyMessage = (props) => {
-    const { title, text, link } = props;
+const EmptyMessage = props => {
+    const {title, text, link} = props;
 
     let textContent = undefined;
 
     if (text) {
         textContent = (
-            <Typography
-                type="subheading"
-                component="p"
-                align={'center'}
-                style={{margin: '0 0 20px'}}>
+            <Typography type="subheading" component="p" align={'center'} style={{margin: '0 0 20px'}}>
                 {text}
             </Typography>
         );
@@ -43,25 +41,17 @@ const EmptyMessage = (props) => {
     if (link) {
         button = (
             <Link to={link.path}>
-                <Button
-                    raised
-                    color="primary">
+                <Button raised color="primary">
                     {link.title}
                 </Button>
             </Link>
         );
-    } 
+    }
 
     return (
         <Container>
-            <Paper
-                style={styleSheet}
-                elevation={1}>
-                <Typography
-                    type="title"
-                    component="h2"
-                    align={'center'}
-                    style={{margin: '0 0 10px'}}>
+            <Paper style={styleSheet} elevation={1}>
+                <Typography type="title" component="h2" align={'center'} style={{margin: '0 0 10px'}}>
                     {title}
                 </Typography>
                 {textContent}
@@ -71,7 +61,7 @@ const EmptyMessage = (props) => {
     );
 };
 
-const { string } = PropTypes;
+const {string} = PropTypes;
 
 EmptyMessage.propTypes = {
     title: string.isRequired,

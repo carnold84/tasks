@@ -1,19 +1,22 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
+import React, {Component} from 'react';
+import {connect} from 'react-redux';
+import {Link} from 'react-router-dom';
 import styled from 'styled-components';
 import _isEmpty from 'lodash/isEmpty';
-import { withStyles, createStyleSheet } from 'material-ui/styles';
-import AppBar from 'material-ui/AppBar';
-import Toolbar from 'material-ui/Toolbar';
-import Typography from 'material-ui/Typography';
-import Button from 'material-ui/Button';
-import List from 'material-ui/List';
-import AddIcon from 'material-ui-icons/Add';
-import { CircularProgress } from 'material-ui/Progress';
+
+// material ui
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
+import List from '@material-ui/core/List';
+import CircularProgress from '@material-ui/core/CircularProgress';
+
+// material ui icons
+import AddIcon from '@material-ui/icons/Add';
 
 import config from '../config';
-import { FabContainer } from '../styles';
+import {FabContainer} from '../styles';
 
 import Item from '../containers/Item';
 
@@ -65,16 +68,13 @@ const ProgressContainer = styled.div`
     z-index: 2;
 `;
 
-const styleSheet = createStyleSheet('Main', {
-    appBar: {
-        fontFamily: 'inherit',
-    },
-});
+const StyledList = styled(List)`
+    width: 100%;
+`;
 
 class Main extends Component {
-
     render() {
-        const { tasks } = this.props;
+        const {tasks} = this.props;
 
         let content = undefined;
 
@@ -87,27 +87,18 @@ class Main extends Component {
         } else {
             if (tasks.length > 0) {
                 content = (
-                    <List disablePadding>
-                        {
-                            tasks.map((task) => {
+                    <StyledList disablePadding>
+                        {tasks.map(task => {
+                            if (task.children) {
+                                let text = task.children.map(child => {
+                                    return child.text;
+                                });
+                                task.subText = text.join(', ');
+                            }
 
-                                if (task.children) {
-                                    let text = task.children.map(child => {
-                                        return child.text;
-                                    });
-                                    task.subText = text.join(', ');
-                                }
-
-                                return (
-                                    <Item
-                                        key={task.id}
-                                        data={task}
-                                        linkify={false}
-                                        link={`/task/${task.id}`} />
-                                );
-                            })
-                        }
-                    </List>
+                            return <Item key={task.id} data={task} linkify={false} link={`/task/${task.id}`} />;
+                        })}
+                    </StyledList>
                 );
             } else {
                 content = (
@@ -128,18 +119,15 @@ class Main extends Component {
                 <MainContainer>
                     <AppBar position="static">
                         <Toolbar>
-                            <Typography type="subheading" color="inherit">{config.appName}</Typography>
+                            <Typography type="subheading" color="inherit">
+                                {config.appName}
+                            </Typography>
                         </Toolbar>
                     </AppBar>
-                    <Content>
-                        {content}
-                    </Content>
+                    <Content>{content}</Content>
                     <FabContainer>
                         <Link to={'/task'}>
-                            <Button
-                                fab
-                                color="primary"
-                                focusable={false}>
+                            <Button fab color="primary" focusable={false}>
                                 <AddIcon />
                             </Button>
                         </Link>
@@ -150,16 +138,13 @@ class Main extends Component {
     }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         isFetching: state.tasks.isFetching,
         tasks: state.tasks.tasks,
         tasksById: state.tasks.tasksById,
         subTasksByParentId: state.tasks.subTasksByParentId,
-    }
-}
+    };
+};
 
-export default connect(
-    mapStateToProps,
-    null,
-)(withStyles(styleSheet)(Main));
+export default connect(mapStateToProps, null)(Main);
