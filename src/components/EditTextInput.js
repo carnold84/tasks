@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import ClickOutside from 'react-click-outside';
 
 // material ui
+import {withTheme} from '@material-ui/core/styles';
 import Input from '@material-ui/core/Input/Input';
 import IconButton from '@material-ui/core/IconButton';
 import CheckIcon from '@material-ui/icons/Check';
@@ -69,13 +70,16 @@ class EditTextInput extends Component {
 
     render() {
         const {text} = this.state;
-        const {color, onCancel} = this.props;
+        const {color, onCancel, theme} = this.props;
+
+        console.log(color);
+        console.log(theme);
 
         const content = (
-            <Container color={color}>
+            <Container color={theme.palette[color].main}>
                 <Input
-                    id="input"
-                    type="text"
+                    id={'input'}
+                    type={'text'}
                     inputRef={el => (this.input = el)}
                     value={text}
                     placeholder={'Task...'}
@@ -84,7 +88,7 @@ class EditTextInput extends Component {
                     style={{width: '100%', fontSize: '16px', fontWeight: '400', lineHeight: '24px'}}
                     disableUnderline={true}
                 />
-                <IconButton aria-label="Save" onClick={this.onSaveClick}>
+                <IconButton aria-label={'Save'} onClick={this.onSaveClick}>
                     <CheckIcon color={color} />
                 </IconButton>
             </Container>
@@ -116,4 +120,4 @@ EditTextInput.defaultProps = {
     color: 'rgba(0, 0, 0, 0.8)',
 };
 
-export default EditTextInput;
+export default withTheme()(EditTextInput);

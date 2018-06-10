@@ -59,7 +59,11 @@ class EditDialog extends Component {
             <Container>
                 <Dialog>
                     <Paper elevation={2} square style={{width: '100%', padding: '10px 10px 10px 20px'}}>
-                        <EditTextInput defaultValue={text ? text : undefined} onSubmit={text => onSubmit(text)} />
+                        <EditTextInput
+                            color={'primary'}
+                            defaultValue={text ? text : undefined}
+                            onSubmit={text => onSubmit(text)}
+                        />
                     </Paper>
                 </Dialog>
                 <Overlay onClick={onCancel} />

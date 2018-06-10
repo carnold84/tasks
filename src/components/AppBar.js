@@ -31,7 +31,7 @@ const ElementsRight = styled.div`
     display: flex;
 `;
 
-const AppBar = (props) => {
+const AppBar = props => {
     return (
         <Container>
             <Title>{props.textLeft}</Title>
@@ -40,7 +40,7 @@ const AppBar = (props) => {
     );
 };
 
-const { string, array } = PropTypes;
+const {string, array} = PropTypes;
 
 AppBar.propTypes = {
     textLeft: string,

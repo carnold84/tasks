@@ -15,6 +15,8 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 // material ui icons
 import AddIcon from '@material-ui/icons/Add';
 
+import {deleteTask, updateTask} from '../store/tasks/actions';
+
 import config from '../config';
 import {FabContainer} from '../styles';
 
@@ -73,6 +75,14 @@ const StyledList = styled(List)`
 `;
 
 class Main extends Component {
+    onDelete = id => {
+        this.props.dispatch(deleteTask(id));
+    };
+
+    onCompleted = data => {
+        this.props.dispatch(updateTask(data));
+    };
+
     render() {
         const {tasks} = this.props;
 
@@ -96,7 +106,16 @@ class Main extends Component {
                                 task.subText = text.join(', ');
                             }
 
-                            return <Item key={task.id} data={task} linkify={false} link={`/task/${task.id}`} />;
+                            return (
+                                <Item
+                                    key={task.id}
+                                    data={task}
+                                    linkify={false}
+                                    link={`/task/${task.id}`}
+                                    onDelete={this.onDelete}
+                                    onComplete={this.onCompleted}
+                                />
+                            );
                         })}
                     </StyledList>
                 );
@@ -117,9 +136,9 @@ class Main extends Component {
         return (
             <Container>
                 <MainContainer>
-                    <AppBar position="static">
+                    <AppBar position={'static'}>
                         <Toolbar>
-                            <Typography type="subheading" color="inherit">
+                            <Typography type={'subheading'} color={'inherit'}>
                                 {config.appName}
                             </Typography>
                         </Toolbar>
@@ -127,7 +146,7 @@ class Main extends Component {
                     <Content>{content}</Content>
                     <FabContainer>
                         <Link to={'/task'}>
-                            <Button fab color="primary" focusable={false}>
+                            <Button variant={'fab'} color={'primary'} focusable={'false'}>
                                 <AddIcon />
                             </Button>
                         </Link>

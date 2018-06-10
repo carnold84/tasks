@@ -24,16 +24,11 @@ const Container = styled.button`
     }
 `;
 
-const FloatingActionButton = (props) => {
-
-    return (
-      <Container onClick={props.onClick}>
-          {props.children}
-      </Container>
-    );
+const FloatingActionButton = props => {
+    return <Container onClick={props.onClick}>{props.children}</Container>;
 };
 
-const { func, element } = PropTypes;
+const {func, element} = PropTypes;
 
 FloatingActionButton.propTypes = {
     onClick: func.isRequired,

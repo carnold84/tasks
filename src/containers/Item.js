@@ -16,58 +16,10 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked';
 
-import {deleteTask, updateTask} from '../store/tasks/actions';
-
 const Container = styled.li`
     width: 100%;
     flex-direction: column;
     display: flex;
-`;
-
-const ListItemPrimaryAction = styled.div`
-    overflow: hidden;
-    flex-grow: 1;
-    flex-direction: column;
-    justify-content: center;
-    align-self: stretch;
-    align-items: flex-start;
-    display: flex;
-
-    a,
-    a:link,
-    a:visited {
-        text-decoration: none;
-        color: rgba(0, 0, 0, 0.8);
-    }
-`;
-
-const ListItemPrimaryText = styled.h3`
-    width: 100%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    word-wrap: break-word;
-
-    a,
-    a:link,
-    a:visited {
-        color: rgba(0, 0, 0, 0.8);
-    }
-`;
-
-const ListItemSecondaryText = styled.p`
-    width: 100%;
-    color: #999999;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    word-wrap: break-word;
-
-    a,
-    a:link,
-    a:visited {
-        color: rgba(0, 0, 0, 0.4);
-    }
 `;
 
 const ListItemSecondaryAction = styled.div`
@@ -86,27 +38,39 @@ const StyledIconButton = styled(IconButton)`
 
 const StyledListItem = styled(ListItem)`
     padding: 5px;
+
+    a,
+    a:link,
+    a:visited {
+        align-items: center;
+        align-self: stretch;
+        color: rgba(0, 0, 0, 0.8);
+        display: flex;
+        flex-grow: 1;
+        text-decoration: none;
+    }
 `;
 
 const StyledLinkify = styled(Linkify)`
     width: 100%;
 `;
 
-const {object, func, bool} = PropTypes;
-
 class Item extends Component {
     onDelete = () => {
-        const {data} = this.props;
+        const {data, onDelete} = this.props;
 
-        this.props.dispatch(deleteTask(data.id));
+        onDelete(data.id);
     };
 
     onCompleted = (evt, checked) => {
-        const {data} = this.props;
+        const {data, onComplete} = this.props;
 
-        data.completed = checked;
+        const item = {
+            ...data,
+            completed: checked,
+        };
 
-        this.props.dispatch(updateTask(data));
+        onComplete(item);
     };
 
     shouldComponentUpdate(nextProps) {
@@ -116,7 +80,7 @@ class Item extends Component {
     render() {
         const {data, link, linkify} = this.props;
 
-        let content = data.text;
+        let content = <ListItemText primary={data.text} secondary={data.subText ? data.subText : null} />;
 
         if (linkify) {
             content = (
@@ -133,7 +97,7 @@ class Item extends Component {
         }
 
         if (link) {
-            content = <Link to={link}>{data.text}</Link>;
+            content = <Link to={link}>{content}</Link>;
         }
 
         return (
@@ -141,13 +105,13 @@ class Item extends Component {
                 <Checkbox
                     checked={data.completed}
                     onChange={this.onCompleted}
-                    tabIndex="-1"
-                    icon={<RadioButtonUncheckedIcon />}
-                    checkedIcon={<CheckCircleIcon />}
+                    tabIndex={'-1'}
+                    icon={<RadioButtonUncheckedIcon color={'primary'} />}
+                    checkedIcon={<CheckCircleIcon color={'primary'} />}
                 />
-                <ListItemText primary={content} secondary={data.subText ? data.subText : null} />
+                {content}
                 <ListItemSecondaryAction>
-                    <StyledIconButton aria-label="Delete" onClick={this.onDelete}>
+                    <StyledIconButton aria-label={'Delete'} onClick={this.onDelete}>
                         <DeleteIcon />
                     </StyledIconButton>
                 </ListItemSecondaryAction>
@@ -156,15 +120,18 @@ class Item extends Component {
     }
 }
 
+const {object, func, bool, string} = PropTypes;
+
 Item.propTypes = {
     data: object.isRequired,
-    onCompleted: func,
-    onDelete: func,
+    link: string,
     linkify: bool,
+    onComplete: func.isRequired,
+    onDelete: func.isRequired,
 };
 
 Item.defaultProps = {
     linkify: false,
 };
 
-export default connect()(Item);
+export default Item;

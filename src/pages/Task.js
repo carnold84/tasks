@@ -17,7 +17,7 @@ import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
 
-import {createTask, updateTask} from '../store/tasks/actions';
+import {createTask, deleteTask, updateTask} from '../store/tasks/actions';
 
 import Item from '../containers/Item';
 
@@ -74,6 +74,14 @@ const AppBarTitle = styled.h2`
 `;
 
 class Task extends Component {
+    onTaskDelete = id => {
+        this.props.dispatch(deleteTask(id));
+    };
+
+    onTaskCompleted = data => {
+        this.props.dispatch(updateTask(data));
+    };
+
     onTaskSave = text => {
         const {match, history, tasksById, dispatch} = this.props;
         const id = match.params.id;
@@ -85,7 +93,7 @@ class Task extends Component {
             history.goBack();
         } else {
             dispatch(createTask(text));
-            history.go(2);
+            history.goBack();
         }
     };
 
@@ -137,7 +145,7 @@ class Task extends Component {
                     <TitleInput>
                         <AppBarTitle>{title}</AppBarTitle>
                         <Link to={`/task/${id}/edit`}>
-                            <IconButton color="contrast" aria-label="Edit">
+                            <IconButton color={'secondary'} aria-label={'Edit'}>
                                 <EditIcon />
                             </IconButton>
                         </Link>
@@ -148,7 +156,15 @@ class Task extends Component {
                     content = (
                         <List disablePadding>
                             {task.children.map(childTask => {
-                                return <Item key={childTask.id} data={childTask} linkify={true} />;
+                                return (
+                                    <Item
+                                        key={childTask.id}
+                                        data={childTask}
+                                        linkify={true}
+                                        onDelete={this.onTaskDelete}
+                                        onComplete={this.onTaskCompleted}
+                                    />
+                                );
                             })}
                         </List>
                     );
@@ -160,7 +176,7 @@ class Task extends Component {
                     task_input = (
                         <TitleInput>
                             <EditTextInput
-                                color={'#ffffff'}
+                                color={'secondary'}
                                 defaultValue={task ? task.text : undefined}
                                 onSubmit={this.onTaskSave}
                                 onCancel={this.onCancel}
@@ -178,7 +194,7 @@ class Task extends Component {
         } else {
             task_input = (
                 <TitleInput>
-                    <EditTextInput color={'#ffffff'} defaultValue={undefined} onSubmit={this.onTaskSave} />
+                    <EditTextInput color={'secondary'} defaultValue={undefined} onSubmit={this.onTaskSave} />
                 </TitleInput>
             );
         }
@@ -188,7 +204,7 @@ class Task extends Component {
                 <AppBar position="static">
                     <Toolbar disableGutters>
                         <Link to={'/'}>
-                            <IconButton color="contrast" aria-label="Close" onClick={this.onClose}>
+                            <IconButton color={'secondary'} aria-label={'Close'} onClick={this.onClose}>
                                 <ArrowBackIcon />
                             </IconButton>
                         </Link>
@@ -199,7 +215,7 @@ class Task extends Component {
                 {task && (
                     <FabContainer>
                         <Link to={`/task/${id}/new`}>
-                            <Button fab color="primary">
+                            <Button variant={'fab'} color={'primary'}>
                                 <AddIcon />
                             </Button>
                         </Link>

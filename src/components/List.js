@@ -1,4 +1,4 @@
-import React, { Children } from 'react';
+import React, {Children} from 'react';
 import styled from 'styled-components';
 
 const Container = styled.div`
@@ -10,19 +10,14 @@ const Container = styled.div`
     display: flex;
 `;
 
-const List = (props) => {
+const List = props => {
+    const {children} = props;
 
-    const { children } = props;
-
-    let content = Children.map(children, (child) => {
+    let content = Children.map(children, child => {
         return child;
     });
 
-    return (
-      <Container>
-          {content}
-      </Container>
-    );
+    return <Container>{content}</Container>;
 };
 
 export default List;

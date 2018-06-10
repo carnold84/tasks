@@ -25,6 +25,20 @@ store.dispatch(fetchTasks());
 
 const theme = createMuiTheme({
     primary: palette,
+    palette: {
+        primary: {
+            light: '#555555',
+            main: '#333333',
+            dark: '#111111',
+            contrastText: '#ffffff',
+        },
+        secondary: {
+            light: '#555555',
+            main: '#ffffff',
+            dark: '#111111',
+            contrastText: '#333333',
+        },
+    },
     typography: {
         fontFamily: 'Roboto Condensed',
     },
