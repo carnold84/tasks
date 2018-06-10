@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {connect} from 'react-redux';
 import {Link} from 'react-router-dom';
 import styled from 'styled-components';
 import Linkify from 'linkifyjs/react';
@@ -15,12 +14,6 @@ import Checkbox from '@material-ui/core/Checkbox';
 import DeleteIcon from '@material-ui/icons/Delete';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked';
-
-const Container = styled.li`
-    width: 100%;
-    flex-direction: column;
-    display: flex;
-`;
 
 const ListItemSecondaryAction = styled.div`
     justify-content: center;

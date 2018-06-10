@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {Link} from 'react-router-dom';
 import styled from 'styled-components';
-import _isEmpty from 'lodash/isEmpty';
 
 // material ui
 import AppBar from '@material-ui/core/AppBar';

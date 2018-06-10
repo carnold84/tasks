@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {createStore, applyMiddleware, combineReducers, compose} from 'redux';
 import {Provider} from 'react-redux';
 import thunkMiddleware from 'redux-thunk';
-import {MuiThemeProvider, createMuiTheme, createTypography} from '@material-ui/core/styles';
+import {MuiThemeProvider, createMuiTheme} from '@material-ui/core/styles';
 import {BrowserRouter as Router, Route} from 'react-router-dom';
 
 import palette from './theme';

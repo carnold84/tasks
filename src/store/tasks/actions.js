@@ -32,14 +32,6 @@ const receiveTask = task => {
     };
 };
 
-const fetchTask = id => {
-    return dispatch => {
-        return fetch(`${TASKS_ENDPOINT}/${id}`)
-            .then(response => response.json())
-            .then(json => dispatch(receiveTask(json)));
-    };
-};
-
 const createTask = (text, parentId) => {
     return dispatch => {
         const params = {
@@ -75,7 +67,6 @@ const updateTask = task => {
         return fetch(url, params)
             .then(response => response.json())
             .then(response => {
-                console.log('response', response.task);
                 dispatch(receiveTask(response.task));
             });
     };

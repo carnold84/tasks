@@ -1,4 +1,3 @@
-import _cloneDeep from 'lodash/cloneDeep';
 import * as types from './actionTypes';
 
 const initialState = {
