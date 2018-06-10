@@ -91,7 +91,7 @@ class Item extends Component {
                         },
                     }}
                 >
-                    {data.text}
+                    {content}
                 </StyledLinkify>
             );
         }

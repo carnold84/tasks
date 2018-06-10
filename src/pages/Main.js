@@ -162,7 +162,6 @@ const mapStateToProps = state => {
         isFetching: state.tasks.isFetching,
         tasks: state.tasks.tasks,
         tasksById: state.tasks.tasksById,
-        subTasksByParentId: state.tasks.subTasksByParentId,
     };
 };
 

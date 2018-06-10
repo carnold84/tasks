@@ -107,8 +107,7 @@ class Task extends Component {
         const id = match.params.id;
 
         if (id) {
-            const task = tasksById[id];
-            dispatch(createTask(text, task.id));
+            dispatch(createTask(text, id));
         } else {
             const sub_task = tasksById[id];
             sub_task.text = text;
@@ -118,10 +117,6 @@ class Task extends Component {
 
         history.push(`/task/${id}`);
     };
-
-    componentWillReceiveProps(nextProps) {
-        console.log(nextProps);
-    }
 
     render() {
         const {match, tasksById} = this.props;
@@ -236,7 +231,6 @@ Task.propTypes = {
 const mapStateToProps = state => {
     return {
         tasksById: state.tasks.tasksById,
-        subTasksByParentId: state.tasks.subTasksByParentId,
     };
 };
 

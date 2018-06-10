@@ -8,37 +8,31 @@ const initialState = {
 };
 
 const reduce = (state = initialState, action = {}) => {
-
     let tasks = undefined;
     let tasksById = undefined;
     let subTasksByParentId = undefined;
-    
-    switch (action.type) {
-            
-        case types.REQUEST_TASKS:
 
+    switch (action.type) {
+        case types.REQUEST_TASKS:
             return {
                 ...state,
             };
-            
-        case types.RECEIVE_TASKS:
 
+        case types.RECEIVE_TASKS:
             tasks = [];
             tasksById = {};
             subTasksByParentId = {};
 
             // loop through all returned tasks and add to array
             action.tasks.forEach(task => {
-                
                 // normalise _id to id
                 task.id = task.id ? task.id : task._id;
 
                 // store task indexed by id
                 tasksById[task.id] = task;
-                
+
                 // if it has a parentId then add it to parent task
                 if (task.parentId) {
-
                     // check if parent already has children otherwise
                     // create new array for children
                     if (subTasksByParentId[task.parentId] === undefined) {
@@ -48,7 +42,6 @@ const reduce = (state = initialState, action = {}) => {
                     // add task to it's parent
                     subTasksByParentId[task.parentId].push(task);
                 } else {
-
                     // not a child task so add to main tasks
                     tasks.push(task);
                 }
@@ -64,50 +57,43 @@ const reduce = (state = initialState, action = {}) => {
                 tasksById,
                 subTasksByParentId,
             };
-            
-        case types.RECEIVE_TASK:
 
+        case types.RECEIVE_TASK:
             // create new arrays
-            tasks = _cloneDeep(state.tasks);
-            tasksById = _cloneDeep(state.tasksById);
-            subTasksByParentId = _cloneDeep(state.subTasksByParentId);
+            tasks = [...state.tasks];
+            tasksById = {...state.tasksById};
+            subTasksByParentId = {...state.subTasksByParentId};
 
             // store the received task
             let received_task = action.task;
 
             // normalise _id to id
             received_task.id = received_task.id ? received_task.id : received_task._id;
-            
+
             // task is an existing one
             if (tasksById[received_task.id]) {
-                
                 // check if it's a subtask
                 if (received_task.parentId) {
-
                     // ref to parents sub tasks
                     let sub_tasks = subTasksByParentId[received_task.parentId];
 
                     // loop through sub tasks and replace existing one
                     sub_tasks = sub_tasks.map(subTask => {
-
                         if (received_task.id === subTask.id) {
                             return received_task;
                         }
 
                         return subTask;
                     });
-                    
+
                     let parent = tasksById[received_task.parentId];
 
                     if (parent) {
                         parent.children = sub_tasks;
                     }
                 } else {
-
                     tasks = state.tasks.map(task => {
-
                         if (received_task.id === task.id) {
-
                             received_task.children = subTasksByParentId[received_task.id];
 
                             return received_task;
@@ -117,29 +103,25 @@ const reduce = (state = initialState, action = {}) => {
                     });
                 }
             } else {
-            
                 if (received_task.parentId) {
-
                     if (subTasksByParentId[received_task.parentId] === undefined) {
                         subTasksByParentId[received_task.parentId] = [];
                     }
-                    
-                    let sub_tasks = subTasksByParentId[received_task.parentId];
 
-                    sub_tasks.push(received_task);
+                    let sub_tasks = subTasksByParentId[received_task.parentId];
 
                     let parent = tasksById[received_task.parentId];
 
                     if (parent) {
-                        parent.children = sub_tasks;
+                        parent.children = [...sub_tasks, received_task];
                     }
+                } else {
+                    tasks = [...tasks];
+
+                    tasks.push(received_task);
                 }
-
-                tasks = [...tasks];
-
-                tasks.push(received_task);
             }
-            
+
             tasksById[received_task.id] = received_task;
 
             return {
@@ -157,10 +139,10 @@ export default reduce;
 
 // selectors
 
-export const getTasks = (state) => {
+export const getTasks = state => {
     return state.tasks;
 };
 
-export const getTasksById = (state) => {
+export const getTasksById = state => {
     return state.tasksById;
 };
